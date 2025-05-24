@@ -26,9 +26,9 @@ export default function TemplateTwo({ resumeData }) {
     <div style={{ fontFamily: 'Georgia, serif', padding: 20, maxWidth: 800, margin: 'auto', backgroundColor: '#fff', color: '#000' }}>
       {/* HEADER */}
       <header style={{ textAlign: 'center', borderBottom: '2px solid #000', paddingBottom: 10 }}>
-        <h1 style={{ margin: 0 }}>{personalInfo.name || 'Click here to enter NAME'}</h1>
-        <p style={{ margin: 0, fontStyle: 'italic' }}>{personalInfo.email || 'Click here to enter e-mail'} | {personalInfo.phone || 'Click here to enter phone number'}</p>
-        <p>{personalInfo.address || 'Click here to enter address, city, state, and zip code'}</p>
+        <h1 style={{ margin: 0 }}>{personalInfo.name }</h1>
+        <p style={{ margin: 0, fontStyle: 'italic' }}>{personalInfo.email} | {personalInfo.phone }</p>
+        <p>{personalInfo.address }</p>
         {(personalInfo.github || personalInfo.linkedin) && (
           <p>
             {personalInfo.github && <a href={personalInfo.github}>GitHub</a>}
@@ -53,8 +53,8 @@ export default function TemplateTwo({ resumeData }) {
           {education.map((edu, i) => (
             <div key={i} style={{ marginBottom: 10 }}>
               <strong>{edu.institution}</strong>, {edu.location} — {edu.degree}<br />
-              <em>{edu.field} | GPA: {edu.gpa || 'Click here to enter GPA'} (Round to two decimal points: 3.00/4.00)</em><br />
-              <span>Graduation: {edu.year || 'Insert Grad Date'}</span>
+              <em>{edu.field} | GPA: {edu.gpa } (Round to two decimal points: 3.00/4.00)</em><br />
+              <span>Graduation: {edu.year }</span>
             </div>
           ))}
         </section>
@@ -85,7 +85,7 @@ export default function TemplateTwo({ resumeData }) {
           {honorsActivities.map((item, i) => (
             <div key={i}>
               <strong>{item.organization}</strong> — {item.title}<br />
-              <span>{item.date || 'Insert Date Range'}</span>
+              <span>{item.date }</span>
             </div>
           ))}
         </section>

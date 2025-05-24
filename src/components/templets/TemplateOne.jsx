@@ -6,6 +6,8 @@ import {
   FaGithub,
 } from "react-icons/fa";
 
+
+
 export default function TemplateOne({ resumeData }) {
   const {
     personalInfo,
@@ -19,16 +21,16 @@ export default function TemplateOne({ resumeData }) {
   } = resumeData;
 
   return (
-    <div className="flex max-w-5xl mx-auto my-10 font-sans bg-white shadow-lg print:shadow-none">
+    <div className="flex max-w-5xl mx-auto my-10 font-sans dark:bg-gray-900 dark:text-white shadow-lg print:shadow-none">
       {/* LEFT COLUMN */}
-      <div className="w-1/3 bg-gray-100 p-8">
+      <div className="w-1/3 bg-gray-100 dark:bg-gray-800 p-8">
         <h1 className="text-2xl font-bold tracking-widest uppercase">{personalInfo.name}</h1>
-        <p className="text-gray-600 -mt-2">{personalInfo.title || "STUDENT"}</p>
-        <hr className="my-4" />
+        <p className="text-gray-600 dark:text-gray-300 -mt-2">{personalInfo.title }</p>
+        <hr className="my-4 border-gray-300 dark:border-gray-600" />
 
         {/* Contact */}
         <SectionTitle>Contact</SectionTitle>
-        <div className="space-y-2 text-sm text-gray-700">
+        <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
           <p className="flex items-center gap-2"><FaPhone /> {personalInfo.phone}</p>
           <p className="flex items-center gap-2"><FaEnvelope /> {personalInfo.email}</p>
           {personalInfo.linkedin && (
@@ -54,7 +56,7 @@ export default function TemplateOne({ resumeData }) {
           <div key={i} className="mb-4 text-sm">
             <p className="font-semibold">{edu.institution}</p>
             <p>{edu.degree}</p>
-            <p className="text-xs text-gray-600">{edu.year}</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">{edu.year}</p>
           </div>
         ))}
 
@@ -81,7 +83,6 @@ export default function TemplateOne({ resumeData }) {
 
       {/* RIGHT COLUMN */}
       <div className="w-2/3 p-8">
-        {/* Objective */}
         {objective && (
           <>
             <SectionTitle>Summary</SectionTitle>
@@ -89,21 +90,19 @@ export default function TemplateOne({ resumeData }) {
           </>
         )}
 
-        {/* Experience */}
         {experience.length > 0 && (
           <>
             <SectionTitle>Experience</SectionTitle>
             {experience.map((exp, i) => (
               <div key={i} className="mb-6 text-sm">
                 <p className="font-semibold">{exp.role} @ {exp.company}</p>
-                <p className="italic text-gray-500">{exp.start} – {exp.end}</p>
+                <p className="italic text-gray-500 dark:text-gray-400">{exp.start} – {exp.end}</p>
                 <p>{exp.description}</p>
               </div>
             ))}
           </>
         )}
 
-        {/* Projects */}
         {projects.length > 0 && (
           <>
             <SectionTitle>Projects</SectionTitle>
@@ -116,7 +115,6 @@ export default function TemplateOne({ resumeData }) {
           </>
         )}
 
-        {/* Achievements */}
         {achievements.length > 0 && (
           <>
             <SectionTitle>Achievements</SectionTitle>
@@ -134,8 +132,19 @@ export default function TemplateOne({ resumeData }) {
 
 function SectionTitle({ children }) {
   return (
-    <h3 className="uppercase text-xs font-bold tracking-widest text-gray-700 border-b border-gray-300 pb-1 mt-6 mb-3">
+    <h3 className="uppercase text-xs font-bold tracking-widest text-gray-700 dark:text-gray-300 border-b border-gray-300 dark:border-gray-600 pb-1 mt-6 mb-3">
       {children}
     </h3>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
