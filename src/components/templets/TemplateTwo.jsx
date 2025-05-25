@@ -1,3 +1,13 @@
+import {
+  Box,
+  Typography,
+  Link,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
+} from '@mui/material';
+
 export default function TemplateTwo({ resumeData }) {
   const {
     personalInfo,
@@ -9,137 +19,198 @@ export default function TemplateTwo({ resumeData }) {
     certificates,
     achievements,
     honorsActivities,
-    references
+    references,
   } = resumeData;
 
-  const sectionStyle = {
-    marginTop: 20,
-    borderBottom: '1px solid #000',
-    paddingBottom: 5
-  };
-
-  const boldText = {
-    fontWeight: 'bold'
-  };
-
   return (
-    <div style={{ fontFamily: 'Georgia, serif', padding: 20, maxWidth: 800, margin: 'auto', backgroundColor: '#fff', color: '#000' }}>
+    <Box
+      sx={{
+        fontFamily: 'Georgia, serif',
+        px: 4,
+        py: 5,
+        maxWidth: 800,
+        mx: 'auto',
+        bgcolor: 'background.default',
+        color: 'text.primary',
+      }}
+    >
       {/* HEADER */}
-      <header style={{ textAlign: 'center', borderBottom: '2px solid #000', paddingBottom: 10 }}>
-        <h1 style={{ margin: 0 }}>{personalInfo.name }</h1>
-        <p style={{ margin: 0, fontStyle: 'italic' }}>{personalInfo.email} | {personalInfo.phone }</p>
-        <p>{personalInfo.address }</p>
+      <Box textAlign="center" pb={2} borderBottom={2} borderColor="divider">
+        <Typography variant="h4" fontWeight="bold">
+          {personalInfo.name}
+        </Typography>
+        <Typography variant="body2" fontStyle="italic">
+          {personalInfo.email} | {personalInfo.phone}
+        </Typography>
+        <Typography variant="body2">{personalInfo.address}</Typography>
         {(personalInfo.github || personalInfo.linkedin) && (
-          <p>
-            {personalInfo.github && <a href={personalInfo.github}>GitHub</a>}
+          <Typography variant="body2">
+            {personalInfo.github && (
+              <Link href={personalInfo.github} target="_blank" rel="noopener noreferrer" underline="hover">
+                GitHub
+              </Link>
+            )}
             {personalInfo.github && personalInfo.linkedin && ' | '}
-            {personalInfo.linkedin && <a href={personalInfo.linkedin}>LinkedIn</a>}
-          </p>
+            {personalInfo.linkedin && (
+              <Link href={personalInfo.linkedin} target="_blank" rel="noopener noreferrer" underline="hover">
+                LinkedIn
+              </Link>
+            )}
+          </Typography>
         )}
-      </header>
+      </Box>
 
       {/* OBJECTIVE */}
       {objective && (
-        <section style={sectionStyle}>
-          <h3 style={boldText}>OBJECTIVE</h3>
-          <p>{objective}</p>
-        </section>
+        <Section title="OBJECTIVE">
+          <Typography variant="body2">{objective}</Typography>
+        </Section>
       )}
 
       {/* EDUCATION */}
       {education.length > 0 && (
-        <section style={sectionStyle}>
-          <h3 style={boldText}>EDUCATION</h3>
+        <Section title="EDUCATION">
           {education.map((edu, i) => (
-            <div key={i} style={{ marginBottom: 10 }}>
-              <strong>{edu.institution}</strong>, {edu.location} — {edu.degree}<br />
-              <em>{edu.field} | GPA: {edu.gpa } (Round to two decimal points: 3.00/4.00)</em><br />
-              <span>Graduation: {edu.year }</span>
-            </div>
+            <Box key={i} mb={2}>
+              <Typography variant="subtitle2" fontWeight="bold">
+                {edu.institution}
+              </Typography>
+              <Typography variant="body2">
+                {edu.location} — {edu.degree}
+              </Typography>
+              <Typography variant="caption" fontStyle="italic">
+                {edu.field} | GPA: {Number(edu.gpa).toFixed(2)} (3.00/4.00)
+              </Typography>
+              <Typography variant="caption" display="block">
+                Graduation: {edu.year}
+              </Typography>
+            </Box>
           ))}
-        </section>
+        </Section>
       )}
 
       {/* EXPERIENCE */}
       {experience.length > 0 && (
-        <section style={sectionStyle}>
-          <h3 style={boldText}>EXPERIENCE <span style={{ color: 'gray', fontSize: 12 }}>(can be paid, unpaid, internship, volunteer, etc.)</span></h3>
+        <Section
+          title="EXPERIENCE"
+          subtitle="(can be paid, unpaid, internship, volunteer, etc.)"
+        >
           {experience.map((exp, i) => (
-            <div key={i} style={{ marginBottom: 12 }}>
-              <strong>{exp.company}</strong>, {exp.location} — <em>{exp.role}</em><br />
-              <span><time>{exp.start}</time> - <time>{exp.end}</time></span>
-              <ul>
+            <Box key={i} mb={2}>
+              <Typography variant="subtitle2" fontWeight="bold">
+                {exp.company}, {exp.location}
+              </Typography>
+              <Typography variant="body2" fontStyle="italic">
+                {exp.role}
+              </Typography>
+              <Typography variant="caption">
+                {exp.start} – {exp.end}
+              </Typography>
+              <List dense sx={{ pl: 2 }}>
                 {exp.description?.split('\n').map((line, idx) => (
-                  <li key={idx}>{line}</li>
+                  <ListItem key={idx} disablePadding>
+                    <ListItemText primary={`• ${line}`} />
+                  </ListItem>
                 ))}
-              </ul>
-            </div>
+              </List>
+            </Box>
           ))}
-        </section>
+        </Section>
       )}
 
       {/* HONORS & ACTIVITIES */}
       {honorsActivities?.length > 0 && (
-        <section style={sectionStyle}>
-          <h3 style={boldText}>HONORS & ACTIVITIES <span style={{ color: 'goldenrod', fontWeight: 'normal' }}>(Choose one or both)</span></h3>
+        <Section
+          title="HONORS & ACTIVITIES"
+          subtitle="(Choose one or both)"
+          subtitleColor="warning.main"
+        >
           {honorsActivities.map((item, i) => (
-            <div key={i}>
-              <strong>{item.organization}</strong> — {item.title}<br />
-              <span>{item.date }</span>
-            </div>
+            <Box key={i} mb={1}>
+              <Typography variant="body2" fontWeight="bold">
+                {item.organization}
+              </Typography>
+              <Typography variant="body2">
+                {item.title} — {item.date}
+              </Typography>
+            </Box>
           ))}
-        </section>
+        </Section>
       )}
 
       {/* SKILLS */}
       {skills.length > 0 && (
-        <section style={sectionStyle}>
-          <h3 style={boldText}>KEY SKILLS <span style={{ fontSize: 12, color: 'gray' }}>(not limited to two)</span></h3>
-          <p>{skills.join(', ')}</p>
-        </section>
+        <Section title="KEY SKILLS" subtitle="(not limited to two)">
+          <Typography variant="body2">{skills.join(', ')}</Typography>
+        </Section>
       )}
 
       {/* PROJECTS */}
       {projects.length > 0 && (
-        <section style={sectionStyle}>
-          <h3 style={boldText}>PROJECTS</h3>
+        <Section title="PROJECTS">
           {projects.map((proj, i) => (
-            <p key={i}><strong>{proj.title}</strong>: {proj.description}</p>
+            <Typography key={i} variant="body2" mb={1}>
+              <strong>{proj.title}</strong>: {proj.description}
+            </Typography>
           ))}
-        </section>
+        </Section>
       )}
 
       {/* CERTIFICATES */}
       {certificates.length > 0 && (
-        <section style={sectionStyle}>
-          <h3 style={boldText}>CERTIFICATES</h3>
-          <ul>
+        <Section title="CERTIFICATES">
+          <List dense>
             {certificates.map((cert, i) => (
-              <li key={i}>{cert.name} - {cert.issuer} ({cert.year})</li>
+              <ListItem key={i} disablePadding>
+                <ListItemText
+                  primary={`${cert.name} - ${cert.issuer} (${cert.year})`}
+                />
+              </ListItem>
             ))}
-          </ul>
-        </section>
+          </List>
+        </Section>
       )}
 
       {/* ACHIEVEMENTS */}
       {achievements.length > 0 && (
-        <section style={sectionStyle}>
-          <h3 style={boldText}>ACHIEVEMENTS</h3>
-          <ul>
+        <Section title="ACHIEVEMENTS">
+          <List dense>
             {achievements.map((ach, i) => (
-              <li key={i}>{ach.title} ({ach.year})</li>
+              <ListItem key={i} disablePadding>
+                <ListItemText primary={`${ach.title} (${ach.year})`} />
+              </ListItem>
             ))}
-          </ul>
-        </section>
+          </List>
+        </Section>
       )}
 
       {/* REFERENCES */}
       {references && (
-        <section style={sectionStyle}>
-          <h3 style={boldText}>REFERENCES</h3>
-          <p>Available Upon Request</p>
-        </section>
+        <Section title="REFERENCES">
+          <Typography variant="body2">Available Upon Request</Typography>
+        </Section>
       )}
-    </div>
+    </Box>
+  );
+}
+
+// Reusable Section Component
+function Section({ title, subtitle, subtitleColor = 'text.secondary', children }) {
+  return (
+    <Box mt={4} pb={1} borderBottom={1} borderColor="divider">
+      <Typography variant="h6" fontWeight="bold">
+        {title}{' '}
+        {subtitle && (
+          <Typography
+            component="span"
+            variant="caption"
+            sx={{ color: subtitleColor }}
+          >
+            {subtitle}
+          </Typography>
+        )}
+      </Typography>
+      <Box mt={1}>{children}</Box>
+    </Box>
   );
 }

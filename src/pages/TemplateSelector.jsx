@@ -1,18 +1,19 @@
-import { useState } from 'react';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 
 export default function TemplateSelector({ selectedTemplate, onSelect }) {
   return (
-    <div style={{ marginBottom: 20 }}>
-      <label>
-        Choose Template:{' '}
-        <select
-          value={selectedTemplate}
-          onChange={(e) => onSelect(e.target.value)}
-        >
-          <option value="templateOne">Template One</option>
-          <option value="templateTwo">Template Two</option>
-        </select>
-      </label>
-    </div>
-  );
+    <FormControl fullWidth sx={{ mb: 2 }}>
+      <InputLabel id="template-label">Choose Template</InputLabel>
+      <Select
+        labelId="template-label"
+        id="template-select"
+        value={selectedTemplate}
+        label="Choose Template"
+        onChange={(e) => onSelect(e.target.value)}
+      >
+        <MenuItem value="templateOne">Template One</MenuItem>
+        <MenuItem value="templateTwo">Template Two</MenuItem>
+      </Select>
+    </FormControl>
+  )
 }
