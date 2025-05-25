@@ -1,3 +1,4 @@
+import React, { useRef } from 'react';
 import {
   Box,
   Typography,
@@ -17,6 +18,9 @@ import {
   FaGithub,
 } from 'react-icons/fa';
 
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+
 export default function TemplateOne({ resumeData }) {
   const {
     personalInfo,
@@ -29,16 +33,58 @@ export default function TemplateOne({ resumeData }) {
     achievements,
   } = resumeData;
 
+  const resumeRef = useRef();
+
+ const handleDownloadPdf = () => {
+  const input = resumeRef.current;
+  if (!input) return;
+
+  // Apply temporary white bg + black text to the resume area and all children
+  input.style.setProperty('background-color', '#ffffff', 'important');
+  input.style.setProperty('color', '#000000', 'important');
+
+  const allElements = input.querySelectorAll('*');
+  allElements.forEach((el) => {
+    el.style.setProperty('background-color', '#ffffff', 'important');
+    el.style.setProperty('color', '#000000', 'important');
+  });
+
+  html2canvas(input, { scale: 2 }).then((canvas) => {
+    // Restore: remove forced styles
+    input.style.removeProperty('background-color');
+    input.style.removeProperty('color');
+
+    allElements.forEach((el) => {
+      el.style.removeProperty('background-color');
+      el.style.removeProperty('color');
+    });
+
+    // Generate and save PDF
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`${personalInfo.name || 'resume'}.pdf`);
+  });
+};
+
+
   return (
     <>
-      {/* Print Button (hidden when printing) */}
+      {/* Buttons for print and download */}
       <Box textAlign="center" mb={2} sx={{ '@media print': { display: 'none' } }}>
-        <Button variant="outlined" onClick={() => window.print()}>
+        <Button variant="outlined" onClick={() => window.print()} sx={{ mr: 2 }}>
           Print Resume
+        </Button>
+        <Button variant="contained" onClick={handleDownloadPdf}>
+          Download PDF
         </Button>
       </Box>
 
       <Box
+        ref={resumeRef}
         maxWidth="lg"
         mx="auto"
         my={5}
@@ -147,7 +193,10 @@ export default function TemplateOne({ resumeData }) {
               <List dense>
                 {certificates.map((cert, i) => (
                   <ListItem key={i} sx={{ py: 0 }}>
-                    <ListItemText primary={`${cert.name} — ${cert.issuer}`} secondary={cert.year} />
+                    <ListItemText
+                      primary={`${cert.name} — ${cert.issuer}`}
+                      secondary={cert.year}
+                    />
                   </ListItem>
                 ))}
               </List>

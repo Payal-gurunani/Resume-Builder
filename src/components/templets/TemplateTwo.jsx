@@ -1,3 +1,4 @@
+import React, { useRef } from 'react';
 import {
   Box,
   Typography,
@@ -8,6 +9,8 @@ import {
   ListItemText,
   Button,
 } from '@mui/material';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 export default function TemplateTwo({ resumeData }) {
   const {
@@ -23,16 +26,61 @@ export default function TemplateTwo({ resumeData }) {
     references,
   } = resumeData;
 
+  const resumeRef = useRef();
+
+ const handleDownloadPdf = () => {
+  const input = resumeRef.current;
+  if (!input) return;
+
+  // Force white background and black text
+  input.style.setProperty('background-color', '#ffffff', 'important');
+  input.style.setProperty('color', '#000000', 'important');
+
+  // Force all child elements to white bg and black text
+  const allElements = input.querySelectorAll('*');
+  allElements.forEach((el) => {
+    el.style.setProperty('background-color', '#ffffff', 'important');
+    el.style.setProperty('color', '#000000', 'important');
+  });
+
+  html2canvas(input, { scale: 2 }).then((canvas) => {
+    // Revert changes after capture
+    input.style.removeProperty('background-color');
+    input.style.removeProperty('color');
+
+    allElements.forEach((el) => {
+      el.style.removeProperty('background-color');
+      el.style.removeProperty('color');
+    });
+
+    // Generate PDF from canvas
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`${personalInfo.name || 'resume'}.pdf`);
+  });
+};
+
+
+
   return (
     <>
-      {/* Print Button (hidden when printing) */}
+      {/* Buttons */}
       <Box textAlign="center" mb={2} sx={{ '@media print': { display: 'none' } }}>
-        <Button variant="outlined" onClick={() => window.print()}>
+        <Button variant="outlined" onClick={() => window.print()} sx={{ mr: 2 }}>
           Print Resume
+        </Button>
+        <Button variant="contained" onClick={handleDownloadPdf}>
+          Download PDF
         </Button>
       </Box>
 
+      {/* Resume Content */}
       <Box
+        ref={resumeRef}
         sx={{
           fontFamily: 'Georgia, serif',
           px: 4,
