@@ -14,6 +14,7 @@ import AchievementsSection from './components/AchievementsSection.jsx'
 import TemplateSelector from './pages/TemplateSelector.jsx'
 import Preview from './components/Preview.jsx'
 import Objective from './components/objective.jsx'
+import { ExportJsonButton, ImportJsonInput } from './components/JSONImportExport.jsx'
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material'
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(true)
@@ -36,7 +37,7 @@ function App() {
     if (savedTheme) {
       setIsDarkMode(savedTheme === 'dark')
     }
-  },[])
+  }, [])
 
   useEffect(() => {
     if (isDarkMode) {
@@ -73,6 +74,13 @@ function App() {
         </IconButton>
 
       </div>
+
+
+      <div style={{ padding: '16px', display: 'flex', justifyContent: 'center' }}>
+        <ExportJsonButton resumeData={resumeData} />
+        <ImportJsonInput setResumeData={setResumeData} />
+      </div>
+
       <div className="p-4">
         {page === 'home' && <HomePage onNavigate={setPage} />}
         {page === 'personal' && (
@@ -101,16 +109,16 @@ function App() {
         )}
         {page === 'preview' && (
           <>
-    <TemplateSelector
-      selectedTemplate={selectedTemplate}
-      onSelect={setSelectedTemplate}
-    />
-    <Preview
-      resumeData={resumeData}
-      selectedTemplate={selectedTemplate}
-    
-    />
-  </>
+            <TemplateSelector
+              selectedTemplate={selectedTemplate}
+              onSelect={setSelectedTemplate}
+            />
+            <Preview
+              resumeData={resumeData}
+              selectedTemplate={selectedTemplate}
+
+            />
+          </>
         )}
       </div>
     </ThemeProvider>
