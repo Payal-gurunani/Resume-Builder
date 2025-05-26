@@ -72,14 +72,20 @@ function App() {
         >
           {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
         </IconButton>
-
       </div>
 
+      {page !== 'home' && page !== 'preview' && (
+        <div style={{ padding: '16px', display: 'flex', justifyContent: 'center' }}>
+          <ImportJsonInput setResumeData={setResumeData} />
+        </div>
+      )}
+       {page === 'preview' && (
+        <div style={{ padding: '16px', display: 'flex', justifyContent: 'center' }}>
+          <ExportJsonButton resumeData={resumeData} />
+          <ImportJsonInput setResumeData={setResumeData} />
+        </div>
+      )}
 
-      <div style={{ padding: '16px', display: 'flex', justifyContent: 'center' }}>
-        <ExportJsonButton resumeData={resumeData} />
-        <ImportJsonInput setResumeData={setResumeData} />
-      </div>
 
       <div className="p-4">
         {page === 'home' && <HomePage onNavigate={setPage} />}

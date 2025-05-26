@@ -33,8 +33,7 @@ export default function HomePage({ onNavigate }) {
       >
         Create Resume
       </Button>
-
-      
+     
     </Box>
   );
 }

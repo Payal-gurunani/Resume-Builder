@@ -1,1 +1,35 @@
 @import "tailwindcss";
+
+@layer utilities {
+  .pdf-export {
+    background-color: white !important;
+    color: black !important;
+  }
+
+  .pdf-export a {
+    color: black !important;
+    text-decoration: none !important;
+    pointer-events: none;
+  }
+
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+
+    body {
+      background: white !important;
+      color: black !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .print-container {
+      background-color: white !important;
+      color: black !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  }
+}

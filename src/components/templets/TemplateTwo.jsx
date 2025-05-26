@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import html2pdf from 'html2pdf.js';
 import {
   Box,
   Typography,
@@ -27,56 +28,154 @@ export default function TemplateTwo({ resumeData }) {
   } = resumeData;
 
   const resumeRef = useRef();
-
- const handleDownloadPdf = () => {
+const handlePrint = () => {
   const input = resumeRef.current;
   if (!input) return;
 
-  // Force white background and black text
-  input.style.setProperty('background-color', '#ffffff', 'important');
-  input.style.setProperty('color', '#000000', 'important');
+  const printWindow = window.open('', '_blank');
 
-  // Force all child elements to white bg and black text
-  const allElements = input.querySelectorAll('*');
-  allElements.forEach((el) => {
-    el.style.setProperty('background-color', '#ffffff', 'important');
-    el.style.setProperty('color', '#000000', 'important');
-  });
+  // Collect your app's CSS stylesheets or inline styles
+  const styles = Array.from(document.styleSheets)
+    .map((styleSheet) => {
+      try {
+        return Array.from(styleSheet.cssRules)
+          .map((rule) => rule.cssText)
+          .join('');
+      } catch (e) {
+        return '';
+      }
+    })
+    .join('');
 
-  html2canvas(input, { scale: 2 }).then((canvas) => {
-    // Revert changes after capture
-    input.style.removeProperty('background-color');
-    input.style.removeProperty('color');
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print Resume</title>
+        <style>
+          ${styles}
+          body {
+            background: white !important;
+            color: black !important;
+            margin: 20px;
+          }
+          @media print {
+            button, [data-hide-print] {
+              display: none !important;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div id="resume-root">${input.innerHTML}</div>
+      </body>
+    </html>
+  `);
 
-    allElements.forEach((el) => {
-      el.style.removeProperty('background-color');
-      el.style.removeProperty('color');
-    });
-
-    // Generate PDF from canvas
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`${personalInfo.name || 'resume'}.pdf`);
-  });
+  printWindow.document.close();
+  printWindow.onload = () => {
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+  };
 };
 
+const handleDownloadPdf = () => {
+  const element = resumeRef.current;
+  if (!element) return;
 
+  // Create wrapper div for styling and heading
+  const wrapper = document.createElement('div');
+  wrapper.style.backgroundColor = 'white';
+  wrapper.style.color = 'black';
+  wrapper.style.padding = '20px 30px'; // Less padding to fit content better
+  wrapper.style.fontFamily = 'Arial, sans-serif';
+  wrapper.style.boxSizing = 'border-box';
+  wrapper.style.width = 'calc(210mm - 40px)'; // A4 width minus left+right padding (30+10px)
+  wrapper.style.maxWidth = '800px'; // limit max width for better scaling
+  wrapper.style.minHeight = 'auto'; // remove fixed height so content can grow
+  wrapper.style.margin = 'auto';
+
+  // Page break CSS to avoid cutting off content mid-section
+  const style = document.createElement('style');
+  style.textContent = `
+    h1 { page-break-after: avoid; }
+    h2, h3, h4, h5, h6 { page-break-after: avoid; }
+    p, li, div { page-break-inside: avoid; }
+    .avoid-break { page-break-inside: avoid; }
+  `;
+  wrapper.appendChild(style);
+
+  // Create and add heading with text content
+  const heading = document.createElement('h1');
+  heading.textContent = 'RESUME';
+  heading.style.textAlign = 'center';
+  heading.style.marginBottom = '15px';
+  heading.style.color = 'black';
+  wrapper.appendChild(heading);
+
+  // Clone the resume content and append
+  const clone = element.cloneNode(true);
+
+  // Force all text in clone to black, background to white
+  clone.style.color = 'black';
+  clone.style.backgroundColor = 'white';
+  clone.style.boxSizing = 'border-box';
+  clone.style.padding = '0'; // zero because wrapper handles padding
+
+  // Recursively enforce black text and white background inside cloned content
+  const enforceColors = (node) => {
+    if (node.nodeType === 1) {
+      node.style.color = 'black';
+      node.style.backgroundColor = 'white';
+      for (const child of node.children) {
+        enforceColors(child);
+      }
+    }
+  };
+  enforceColors(clone);
+
+  wrapper.appendChild(clone);
+
+  const opt = {
+    margin: [10, 10, 10, 10], // 10 mm margins all around, a bit tighter but cleaner
+    filename: `${resumeData.personalInfo.name || 'resume'}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#fff',
+      logging: false,
+    },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['css', 'legacy'] },
+  };
+
+  html2pdf()
+    .set(opt)
+    .from(wrapper)
+    .save();
+};
 
   return (
     <>
       {/* Buttons */}
-      <Box textAlign="center" mb={2} sx={{ '@media print': { display: 'none' } }}>
-        <Button variant="outlined" onClick={() => window.print()} sx={{ mr: 2 }}>
-          Print Resume
-        </Button>
-        <Button variant="contained" onClick={handleDownloadPdf}>
-          Download PDF
-        </Button>
-      </Box>
+     <Box
+  textAlign="center"
+  mb={2}
+  sx={{
+    '@media print': {
+      display: 'none',
+    },
+  }}
+>
+  <Button variant="outlined" onClick={handlePrint} sx={{ mr: 2 }}>
+    Print Resume
+  </Button>
+  <Button variant="contained" onClick={handleDownloadPdf}>
+    Download PDF
+  </Button>
+</Box>
+
 
       {/* Resume Content */}
       <Box
