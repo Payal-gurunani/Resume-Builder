@@ -1,7 +1,11 @@
 import { Box, TextField, Typography, Button } from '@mui/material';
+import { useState } from 'react';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 export default function PersonalInfoForm({ resumeData, setResumeData,onNavigate }) {
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const handleChange = (e) => {
+    setIsSubmitted(false); 
     setResumeData({
       ...resumeData,
       personalInfo: {
@@ -12,9 +16,19 @@ export default function PersonalInfoForm({ resumeData, setResumeData,onNavigate 
   };
 
   const handleSubmit = (e) => {
+    setIsSubmitted(false); 
     e.preventDefault();
     console.log('Personal Info Submitted:', resumeData.personalInfo);
-    alert("Submitted")
+    setIsSubmitted(true)
+  };
+const hasFilledPersonalInfo = () => {
+    const { name, email, phone, address } = resumeData.personalInfo;
+    return (
+      name?.trim() !== '' ||
+      email?.trim() !== '' ||
+      phone?.trim() !== '' ||
+      address?.trim() !== ''
+    );
   };
 
   return (
@@ -87,27 +101,22 @@ export default function PersonalInfoForm({ resumeData, setResumeData,onNavigate 
           fullWidth
         />
         <Box sx={{ display: 'flex', gap: 2 }}>
-           <Button
-          variant="outlined"
-          color="primary"
-          type="button"
-          onClick={() => onNavigate('home')}
-          sx={{ mt: 1 }}
-        >
-          Previous
-        </Button>
-           <Button variant="contained" color="primary" type="submit">
-          Submit
-        </Button>
-          <Button
-          variant="outlined"
-          color="primary"
-          type="button"
-          onClick={() => onNavigate('education')}
-          sx={{ mt: 1 }}
-        >
-          Next
-        </Button>
+          
+         {hasFilledPersonalInfo() && !isSubmitted && (
+          <Button variant="contained" color="secondary" type="submit">
+            Submit Education
+          </Button>
+        )}
+        
+          {isSubmitted && (
+          <>
+            <CheckCircleIcon color="success" />
+            <Typography color="success.main" variant="body2">
+              Submitted
+            </Typography>
+          </>
+        )}
+        
         </Box>
       </Box>
     </Box>

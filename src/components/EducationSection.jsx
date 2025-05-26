@@ -1,7 +1,12 @@
 import { Box, TextField, Typography, Button } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { useState, useEffect } from 'react';
 
-export default function EducationSection({ resumeData, setResumeData ,onNavigate}) {
+export default function EducationSection({ resumeData, setResumeData }) {
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
   const handleChange = (index, e) => {
+    setIsSubmitted(false); // reset submission on any change
     const updatedEducation = [...resumeData.education];
     updatedEducation[index] = {
       ...updatedEducation[index],
@@ -11,6 +16,7 @@ export default function EducationSection({ resumeData, setResumeData ,onNavigate
   };
 
   const addEducation = () => {
+    setIsSubmitted(false);
     setResumeData({
       ...resumeData,
       education: [...resumeData.education, { degree: '', school: '', startYear: '', endYear: '', description: '' }],
@@ -18,6 +24,7 @@ export default function EducationSection({ resumeData, setResumeData ,onNavigate
   };
 
   const removeEducation = (index) => {
+    setIsSubmitted(false);
     const updatedEducation = [...resumeData.education];
     updatedEducation.splice(index, 1);
     setResumeData({ ...resumeData, education: updatedEducation });
@@ -26,8 +33,18 @@ export default function EducationSection({ resumeData, setResumeData ,onNavigate
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Education Submitted:', resumeData.education);
+    setIsSubmitted(true); // mark as submitted
+  };
 
-    // Later: Add toast or alert for confirmation
+  // Helper: check if any education field is filled
+  const hasFilledEducation = () => {
+    return resumeData.education.some(edu =>
+      edu.degree.trim() !== '' ||
+      edu.school.trim() !== '' ||
+      edu.startYear.trim() !== '' ||
+      edu.endYear.trim() !== '' ||
+      edu.description.trim() !== ''
+    );
   };
 
   return (
@@ -93,32 +110,26 @@ export default function EducationSection({ resumeData, setResumeData ,onNavigate
           </Button>
         </Box>
       ))}
-      <Button variant="contained" color="primary" onClick={addEducation}>
-          Add Education
-        </Button>
-      <Box sx={{ display: 'flex', gap: 2 , justifyContent:'center', mt:2}}>
-        
-         <Button
-          variant="outlined"
-          color="primary"
-          type="button"
-          onClick={() => onNavigate('personal')}
-          sx={{ mt: 1 , pl:2 ,  }}
-        >
-          Previous
-        </Button>
-        <Button variant="contained" color="secondary" type="submit">
-          Submit Education
-        </Button>
-          <Button
-          variant="outlined"
-          color="primary"
-          type="button"
-          onClick={() => onNavigate('experience')}
-          sx={{ mt: 1 }}
-        >
-          Next
-        </Button>
+
+      <Button variant="contained" color="primary" onClick={addEducation} sx={{ mb: 2 }}>
+        Add Education
+      </Button>
+
+      <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mt: 2, alignItems: 'center' }}>
+        {hasFilledEducation() && !isSubmitted && (
+          <Button variant="contained" color="secondary" type="submit">
+            Submit Education
+          </Button>
+        )}
+
+        {isSubmitted && (
+          <>
+            <CheckCircleIcon color="success" />
+            <Typography color="success.main" variant="body2">
+              Submitted
+            </Typography>
+          </>
+        )}
       </Box>
     </Box>
   );
