@@ -19,7 +19,23 @@ import {
   FaGithub,
 } from 'react-icons/fa';
 
-export default function TemplateOne({ resumeData }) {
+export default function TemplateOne({ 
+    resumeData,
+  fontFamily = 'Arial',
+  primaryColor = '#B0B0B0',
+  spacing = 1,
+  zoom = 1,
+  visibleSections = {
+    education: true,
+  experience: true,
+  projects: true,
+  certificates: true,
+  achievements: true,
+  skills: true,
+  objective: true,
+
+}
+ }) {
   const {
     personalInfo,
     objective,
@@ -32,7 +48,9 @@ export default function TemplateOne({ resumeData }) {
   } = resumeData;
 
   const resumeRef = useRef();
-
+const sectionStyle = {
+    marginBottom: `${spacing}rem`
+  }
   const handleDownloadPdf = () => {
     const element = resumeRef.current;
     if (!element) return;
@@ -158,25 +176,30 @@ export default function TemplateOne({ resumeData }) {
 
       {/* Resume Container */}
       <Box
-        ref={resumeRef}
-        maxWidth="lg"
-        mx="auto"
-        my={5}
-        boxShadow={4}
-        display="flex"
-        flexDirection="column"
-        className="print-container"
-        sx={{
-          '@media print': {
-            boxShadow: 'none',
-            margin: 0,
-            maxWidth: '100%',
-            backgroundColor: '#fff',
-            color: '#000',
-            padding: 0,
-          },
-        }}
-      >
+  ref={resumeRef}
+  maxWidth="lg"
+  mx="auto"
+  my={5}
+  boxShadow={4}
+  display="flex"
+  flexDirection="column"
+  sx={{
+    fontFamily: fontFamily,
+    color: primaryColor,
+    transform: `scale(${zoom})`,
+    transformOrigin: 'top left',
+    '@media print': {
+      boxShadow: 'none',
+      margin: 0,
+      maxWidth: '100%',
+      backgroundColor: '#fff',
+      color: '#000',
+      padding: 0,
+      transform: 'none',
+    },
+  }}
+>
+
         {/* RESUME Heading */}
         <Typography
           variant="h4"
@@ -264,24 +287,27 @@ export default function TemplateOne({ resumeData }) {
               <ContactLine icon={<FaMapMarkerAlt />} text={personalInfo.address} />
             </Stack>
 
-            <SectionTitle>Education</SectionTitle>
-            {education.map((edu, i) => (
-              <Box key={i} mb={2}>
-                <Typography variant="subtitle2">
-                  {edu.degree}
-                </Typography>
-                <Typography variant="body2" fontWeight="bold">
-                  {edu.school}
-                </Typography>
+           {visibleSections.education && education.length > 0 && (
+  <>
+    <SectionTitle>Education</SectionTitle>
+    {education.map((edu, i) => (
+      <Box key={i} sx={{ mb: spacing }}>
+        <Typography variant="subtitle2">
+          {edu.degree}
+        </Typography>
+        <Typography variant="body2" fontWeight="bold">
+          {edu.school}
+        </Typography>
+        <Typography variant="caption" color="text.secondary">
+          {edu.startYear}-{edu.endYear} {edu.cgpa && `| CGPA/Percentage: ${edu.cgpa}`}
+        </Typography>
+      </Box>
+    ))}
+  </>
+)}
 
-                <Typography variant="caption" color="text.secondary">
-                  {edu.startYear}-{edu.endYear} {edu.cgpa && `| CGPA/Percentage: ${edu.cgpa}`}
-                </Typography>
-              </Box>
-            ))}
 
-
-           {certificates.length > 0 && (
+         {visibleSections.certificates && certificates.length > 0 && (
   <>
     <SectionTitle>Certificates</SectionTitle>
     <List dense>
@@ -321,12 +347,14 @@ export default function TemplateOne({ resumeData }) {
 )}
 
 
-            {skills.length > 0 && (
-              <>
-                <SectionTitle>Skills</SectionTitle>
-                <Typography variant="body2">{skills.join(', ')}</Typography>
-              </>
-            )}
+
+           {visibleSections.skills && skills.length > 0 && (
+  <>
+    <SectionTitle>Skills</SectionTitle>
+    <Typography variant="body2">{skills.join(', ')}</Typography>
+  </>
+)}
+
           </Box>
 
           {/* RIGHT COLUMN */}
@@ -342,83 +370,86 @@ export default function TemplateOne({ resumeData }) {
               },
             }}
           >
-            {objective && (
-              <>
-                <SectionTitle>Summary</SectionTitle>
-                <Typography variant="body2" paragraph>
-                  {objective}
-                </Typography>
-              </>
-            )}
-
-            {experience.length > 0 && (
-              <>
-                <SectionTitle>Experience</SectionTitle>
-                {experience.map((exp, i) => (
-                  <Box key={i} mb={3}>
-                    <Typography variant="subtitle2" fontWeight="bold">
-                      {exp.role}
-                    </Typography>
-                    <Typography variant="body2">
-                      {exp.company} - {exp.location}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {exp.start} – {exp.end}
-                    </Typography>
-                    <Typography variant="body2">{exp.description}</Typography>
-                  </Box>
-                ))}
-              </>
-            )}
+           {visibleSections.objective && objective && (
+  <>
+    <SectionTitle>Summary</SectionTitle>
+    <Typography variant="body2" paragraph>
+      {objective}
+    </Typography>
+  </>
+)}
 
 
-            {projects.length > 0 && (
-              <>
-                <SectionTitle>Projects</SectionTitle>
-                {projects.map((proj, i) => (
-                  <Box key={i} mb={2}>
-                    <Typography variant="subtitle2" fontWeight="bold">
-                      {proj.title}
-                    </Typography>
-                    {proj.link && (
-                      <Link
-                        href={proj.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        sx={{
-                          fontWeight: 'bold',
-                          wordBreak: 'break-all',
-                          display: 'inline-block',
-                          mb: 0.5,
-                          '@media print': {
-                            color: 'black',
-                            textDecoration: 'none',
-                            pointerEvents: 'none',
-                          },
-                        }}
-                      >
-                        {proj.link}
-                      </Link>
-                    )}
+           {visibleSections.experience && experience.length > 0 && (
+  <>
+    <SectionTitle>Experience</SectionTitle>
+    {experience.map((exp, i) => (
+      <Box key={i} sx={{ mb: spacing }}>
+        <Typography variant="subtitle2" fontWeight="bold">
+          {exp.role}
+        </Typography>
+        <Typography variant="body2">
+          {exp.company} - {exp.location}
+        </Typography>
+        <Typography variant="caption" color="text.secondary">
+          {exp.start} – {exp.end}
+        </Typography>
+        <Typography variant="body2">{exp.description}</Typography>
+      </Box>
+    ))}
+  </>
+)}
 
-                    <Typography variant="body2">{proj.description}</Typography>
-                  </Box>
-                ))}
-              </>
-            )}
 
-            {achievements.length > 0 && (
-              <>
-                <SectionTitle>Achievements</SectionTitle>
-                <List dense>
-                  {achievements.map((ach, i) => (
-                    <ListItem key={i} sx={{ py: 0 }}>
-                      <ListItemText primary={`${ach.title} (${ach.year})`} />
-                    </ListItem>
-                  ))}
-                </List>
-              </>
-            )}
+
+           {visibleSections.projects && projects.length > 0 && (
+  <>
+    <SectionTitle>Projects</SectionTitle>
+    {projects.map((proj, i) => (
+      <Box key={i} sx={{ mb: spacing }}>
+        <Typography variant="subtitle2" fontWeight="bold">
+          {proj.title}
+        </Typography>
+        {proj.link && (
+          <Link
+            href={proj.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{
+              fontWeight: 'bold',
+              wordBreak: 'break-all',
+              display: 'inline-block',
+              mb: 0.5,
+              '@media print': {
+                color: 'black',
+                textDecoration: 'none',
+                pointerEvents: 'none',
+              },
+            }}
+          >
+            {proj.link}
+          </Link>
+        )}
+        <Typography variant="body2">{proj.description}</Typography>
+      </Box>
+    ))}
+  </>
+)}
+
+
+            {visibleSections.achievements && achievements.length > 0 && (
+  <>
+    <SectionTitle>Achievements</SectionTitle>
+    <List dense>
+      {achievements.map((ach, i) => (
+        <ListItem key={i} sx={{ py: 0 , mb:spacing }}>
+          <ListItemText primary={`${ach.title} (${ach.year})`} />
+        </ListItem>
+      ))}
+    </List>
+  </>
+)}
+
           </Box>
         </Box>
       </Box>
