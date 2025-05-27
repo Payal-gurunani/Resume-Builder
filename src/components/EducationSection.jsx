@@ -6,7 +6,6 @@ export default function EducationSection({ resumeData, setResumeData }) {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleChange = (index, e) => {
-    setIsSubmitted(false); // reset submission on any change
     const updatedEducation = [...resumeData.education];
     updatedEducation[index] = {
       ...updatedEducation[index],
@@ -16,20 +15,20 @@ export default function EducationSection({ resumeData, setResumeData }) {
   };
 
   const addEducation = () => {
-    setIsSubmitted(false);
     setResumeData({
       ...resumeData,
-      education: [...resumeData.education, { degree: '', school: '', startYear: '', endYear: '', description: '' }],
+      education: [
+        ...resumeData.education,
+        { degree: '', school: '', startYear: '', endYear: '', description: '' },
+      ],
     });
   };
 
   const removeEducation = (index) => {
-    setIsSubmitted(false);
     const updatedEducation = [...resumeData.education];
     updatedEducation.splice(index, 1);
     setResumeData({ ...resumeData, education: updatedEducation });
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Education Submitted:', resumeData.education);
@@ -115,7 +114,7 @@ export default function EducationSection({ resumeData, setResumeData }) {
         Add Education
       </Button>
 
-      <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mt: 2, alignItems: 'center' }}>
+      {/* <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mt: 2, alignItems: 'center' }}>
         {hasFilledEducation() && !isSubmitted && (
           <Button variant="contained" color="secondary" type="submit">
             Submit Education
@@ -129,8 +128,8 @@ export default function EducationSection({ resumeData, setResumeData }) {
               Submitted
             </Typography>
           </>
-        )}
-      </Box>
+        )} */}
+      {/* </Box> */}
     </Box>
   );
 }

@@ -68,41 +68,42 @@ function App() {
         </IconButton>
       </div>
 
-      {page !== 'home' && page !== 'preview' && (
-        <div style={{ padding: '16px', display: 'flex', justifyContent: 'center' }}>
-          <ImportJsonInput setResumeData={setResumeData} />
-        </div>
-      )}
-       {page === 'preview' && (
-        <div style={{ padding: '16px', display: 'flex', justifyContent: 'center' }}>
-          <ExportJsonButton resumeData={resumeData} />
-          <ImportJsonInput setResumeData={setResumeData} />
-        </div>
-      )}
 
-          <div className="grid grid-cols-[400px_1fr_300px]">
-      <aside className=" border-r ">
-        <LeftSidebar
-          resumeData={resumeData}
-          setResumeData={setResumeData}
-        />
-      </aside>
+<div className="relative h-screen grid grid-cols-1 md:grid-cols-[1fr_2fr_1fr]">
+  {/* Sidebar (only hidden on mobile) */}
+  <aside className="hidden md:block border-r">
+    <LeftSidebar
+      resumeData={resumeData}
+      setResumeData={setResumeData}
+    />
+  </aside>
+
+  {/* Sidebar toggle (mobile only) */}
+  <div className="md:hidden absolute top-4 left-4 z-50">
+    <LeftSidebar
+      resumeData={resumeData}
+      setResumeData={setResumeData}
+      mobileToggleOnly={false}
+    />
+  </div>
+
+  {/* Main content */}
+  <main className="overflow-y-auto p-2">
+     <ExportJsonButton resumeData={resumeData} />
+      <ImportJsonInput setResumeData={setResumeData} />
+    <TemplateSelector
+      selectedTemplate={selectedTemplate}
+      onSelect={setSelectedTemplate}
+    />
+    <Preview
+      resumeData={resumeData}
+      selectedTemplate={selectedTemplate}
+    />
+  </main>        
       </div>
       <div className="p-4">
-       
-        {page === 'preview' && (
-          <>
-            <TemplateSelector
-              selectedTemplate={selectedTemplate}
-              onSelect={setSelectedTemplate}
-            />
-            <Preview
-              resumeData={resumeData}
-              selectedTemplate={selectedTemplate}
 
-            />
-          </>
-        )}
+       
       </div>
     </ThemeProvider>
   )

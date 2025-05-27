@@ -1,28 +1,42 @@
 import { Box, TextField, Typography, Button } from '@mui/material';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
-export default function PersonalInfoForm({ resumeData, setResumeData,onNavigate }) {
+export default function PersonalInfoForm({ resumeData, setResumeData }) {
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const handleChange = (e) => {
-    setIsSubmitted(false); 
-    setResumeData({
-      ...resumeData,
-      personalInfo: {
-        ...resumeData.personalInfo,
-        [e.target.name]: e.target.value,
-      },
-    });
+  const [localData , setLocalData] = useState(resumeData.personalInfo);
+
+   useEffect(() => {
+    setLocalData(resumeData.personalInfo);
+  }, [resumeData.personalInfo]);
+
+const handleChange = (e) => {
+  setIsSubmitted(false);
+  const updatedLocalData = {
+    ...localData,
+    [e.target.name]: e.target.value,
   };
+  setLocalData(updatedLocalData);
+
+  setResumeData(prev => ({
+    ...prev,
+    personalInfo: updatedLocalData,
+  }));
+};
 
   const handleSubmit = (e) => {
     setIsSubmitted(false); 
     e.preventDefault();
-    console.log('Personal Info Submitted:', resumeData.personalInfo);
+ setResumeData(prev => ({
+      ...prev,
+      personalInfo: localData,
+    }));   
+      console.log('Updated resumeData:', {...resumeData, personalInfo: localData});
+
     setIsSubmitted(true)
   };
 const hasFilledPersonalInfo = () => {
-    const { name, email, phone, address } = resumeData.personalInfo;
+    const { name, email, phone, address } = localData;
     return (
       name?.trim() !== '' ||
       email?.trim() !== '' ||
@@ -45,7 +59,7 @@ const hasFilledPersonalInfo = () => {
         <TextField
           label="Full Name"
           name="name"
-          value={resumeData.personalInfo.name}
+          value={localData.name || ''}
           onChange={handleChange}
           variant="outlined"
           size="small"
@@ -55,7 +69,7 @@ const hasFilledPersonalInfo = () => {
         <TextField
           label="Email"
           name="email"
-          value={resumeData.personalInfo.email}
+          value={localData.email}
           onChange={handleChange}
           variant="outlined"
           size="small"
@@ -65,7 +79,7 @@ const hasFilledPersonalInfo = () => {
         <TextField
           label="Phone"
           name="phone"
-          value={resumeData.personalInfo.phone}
+          value={localData.phone}
           onChange={handleChange}
           variant="outlined"
           size="small"
@@ -75,7 +89,7 @@ const hasFilledPersonalInfo = () => {
         <TextField
           label="Address"
           name="address"
-          value={resumeData.personalInfo.address || ''}
+          value={localData.address || ''}
           onChange={handleChange}
           variant="outlined"
           size="small"
@@ -85,7 +99,7 @@ const hasFilledPersonalInfo = () => {
         <TextField
           label="LinkedIn"
           name="linkedin"
-          value={resumeData.personalInfo.linkedin || ''}
+          value={localData.linkedin || ''}
           onChange={handleChange}
           variant="outlined"
           size="small"
@@ -94,17 +108,17 @@ const hasFilledPersonalInfo = () => {
         <TextField
           label="GitHub"
           name="github"
-          value={resumeData.personalInfo.github || ''}
+          value={localData.github || ''}
           onChange={handleChange}
           variant="outlined"
           size="small"
           fullWidth
         />
-        <Box sx={{ display: 'flex', gap: 2 }}>
+        {/* <Box sx={{ display: 'flex', gap: 2 }}>
           
          {hasFilledPersonalInfo() && !isSubmitted && (
           <Button variant="contained" color="secondary" type="submit">
-            Submit Education
+            Submit
           </Button>
         )}
         
@@ -117,7 +131,7 @@ const hasFilledPersonalInfo = () => {
           </>
         )}
         
-        </Box>
+        </Box> */}
       </Box>
     </Box>
   );

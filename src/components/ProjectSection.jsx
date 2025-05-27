@@ -24,13 +24,8 @@ export default function ProjectsSection({ resumeData, setResumeData, onNavigate 
     setResumeData({ ...resumeData, projects: updatedProjects });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert('Projects Submitted!');
-  };
-
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ p: 2, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 2, mb: 2 }}>
+    <Box sx={{ p: 2, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 2, mb: 2 }}>
       <Typography variant="h6" gutterBottom>
         Projects
       </Typography>
@@ -71,19 +66,31 @@ export default function ProjectsSection({ resumeData, setResumeData, onNavigate 
       </Box>
 
       <List>
-        {resumeData.projects.length === 0 && <Typography color="text.secondary">No projects added yet.</Typography>}
+        {resumeData.projects.length === 0 && (
+          <Typography color="text.secondary">No projects added yet.</Typography>
+        )}
         {resumeData.projects.map((proj, index) => (
-          <ListItem key={index} secondaryAction={
-            <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteProject(index)}>
-              <DeleteIcon />
-            </IconButton>
-          }>
+          <ListItem
+            key={index}
+            secondaryAction={
+              <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteProject(index)}>
+                <DeleteIcon />
+              </IconButton>
+            }
+          >
             <ListItemText
               primary={proj.title}
               secondary={
                 <>
                   {proj.description}
-                  {proj.link && <><br /><a href={proj.link} target="_blank" rel="noreferrer">{proj.link}</a></>}
+                  {proj.link && (
+                    <>
+                      <br />
+                      <a href={proj.link} target="_blank" rel="noreferrer">
+                        {proj.link}
+                      </a>
+                    </>
+                  )}
                 </>
               }
             />
@@ -91,19 +98,7 @@ export default function ProjectsSection({ resumeData, setResumeData, onNavigate 
         ))}
       </List>
 
-      <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mt: 2 }}>
-        <Button variant="outlined" color="primary" type="button" onClick={() => onNavigate('skills')}>
-          Previous
-        </Button>
-
-        <Button variant="contained" color="secondary" type="submit">
-          Submit Projects
-        </Button>
-
-        <Button variant="outlined" color="primary" type="button" onClick={() => onNavigate('objective')} >
-          Next
-        </Button>
-      </Box>
+     
     </Box>
   );
 }

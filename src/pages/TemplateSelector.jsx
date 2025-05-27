@@ -2,7 +2,7 @@ import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 
 export default function TemplateSelector({ selectedTemplate, onSelect }) {
   return (
-    <FormControl fullWidth sx={{ mb: 2 }}>
+    <FormControl fullWidth sx={{ mb: 2 , mt:6  }}>
       <InputLabel id="template-label">Choose Template</InputLabel>
       <Select
         labelId="template-label"

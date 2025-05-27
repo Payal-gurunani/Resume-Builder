@@ -22,14 +22,8 @@ export default function SkillsSection({ resumeData, setResumeData, onNavigate })
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert('Skills Submitted!');
-    // You can add more logic here if needed
-  };
-
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ p: 2, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 2, mb: 2 }}>
+    <Box sx={{ p: 2, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 2, mb: 2 }}>
       <Typography variant="h6" gutterBottom>
         Skills
       </Typography>
@@ -43,36 +37,27 @@ export default function SkillsSection({ resumeData, setResumeData, onNavigate })
           size="small"
           fullWidth
         />
-        <Button variant="contained" onClick={handleAddSkill} type="button">
+        <Button variant="contained" onClick={handleAddSkill}>
           Add
         </Button>
       </Box>
 
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-        {resumeData.skills.length === 0 && <Typography color="text.secondary">No skills added yet.</Typography>}
-        {resumeData.skills.map((skill) => (
-          <Chip
-            key={skill}
-            label={skill}
-            onDelete={() => handleRemoveSkill(skill)}
-            color="primary"
-          />
-        ))}
+        {resumeData.skills.length === 0 ? (
+          <Typography color="text.secondary">No skills added yet.</Typography>
+        ) : (
+          resumeData.skills.map((skill) => (
+            <Chip
+              key={skill}
+              label={skill}
+              onDelete={() => handleRemoveSkill(skill)}
+              color="primary"
+            />
+          ))
+        )}
       </Box>
 
-      <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
-        <Button variant="outlined" color="primary" type="button" onClick={() => onNavigate('experience')}>
-          Previous
-        </Button>
-
-        <Button variant="contained" color="secondary" type="submit">
-          Submit Skills
-        </Button>
-
-        <Button variant="outlined" color="primary" type="button" onClick={() => onNavigate('project')}>
-          Next
-        </Button>
-      </Box>
+      
     </Box>
   );
 }

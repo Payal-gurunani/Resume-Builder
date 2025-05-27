@@ -1,6 +1,6 @@
-
-import { Box, TextField, Typography, Button } from '@mui/material';
+import { Box, TextField, Typography, Button, IconButton } from '@mui/material';
 import { useState } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function CertificatesSection({ resumeData, setResumeData, onNavigate }) {
   const [certificate, setCertificate] = useState({
@@ -15,13 +15,8 @@ export default function CertificatesSection({ resumeData, setResumeData, onNavig
     setCertificate({ ...certificate, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!certificate.title || !certificate.issuer) {
-      alert('Please fill in the required fields!');
-      return;
-    }
+  const handleAdd = () => {
+    if (!certificate.title || !certificate.issuer) return;
 
     setResumeData({
       ...resumeData,
@@ -35,16 +30,16 @@ export default function CertificatesSection({ resumeData, setResumeData, onNavig
       link: '',
       description: '',
     });
+  };
 
-    alert('Certificate added!');
+  const handleRemove = (index) => {
+    const updatedCertificates = [...resumeData.certificates];
+    updatedCertificates.splice(index, 1);
+    setResumeData({ ...resumeData, certificates: updatedCertificates });
   };
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit}
-      sx={{ p: 2, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 2, mb: 2 }}
-    >
+    <Box sx={{ p: 2, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 2, mb: 2 }}>
       <Typography variant="h6" gutterBottom>
         Certificates
       </Typography>
@@ -81,19 +76,32 @@ export default function CertificatesSection({ resumeData, setResumeData, onNavig
           name="description"
           value={certificate.description}
           onChange={handleChange}
+          multiline
         />
 
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
-          <Button variant="outlined" onClick={() => onNavigate('objective')}>
-            Previous
-          </Button>
-          <Button variant="contained" type="submit">
-            Add Certificate
-          </Button>
-          <Button variant="outlined" onClick={() => onNavigate('achievements')}>
-            Next
-          </Button>
-        </Box>
+        <Button variant="contained" onClick={handleAdd}>
+          Add Certificate
+        </Button>
+
+        {resumeData.certificates.length > 0 && (
+          <Box>
+            <Typography variant="subtitle1" sx={{ mt: 2 }}>
+              Added Certificates:
+            </Typography>
+            <ul>
+              {resumeData.certificates.map((cert, index) => (
+                <li key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span>{cert.title} - {cert.issuer}</span>
+                  <IconButton color="error" onClick={() => handleRemove(index)}>
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </li>
+              ))}
+            </ul>
+          </Box>
+        )}
+
+       
       </Box>
     </Box>
   );
