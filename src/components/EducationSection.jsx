@@ -52,9 +52,7 @@ export default function EducationSection({ resumeData, setResumeData }) {
       onSubmit={handleSubmit}
       sx={{ p: 2, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 2, mb: 2 }}
     >
-      <Typography variant="h6" gutterBottom>
-        Education
-      </Typography>
+      
 
       {resumeData.education.map((edu, index) => (
         <Box key={index} sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
@@ -77,22 +75,38 @@ export default function EducationSection({ resumeData, setResumeData }) {
             fullWidth
           />
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <TextField
+                       <TextField
               label="Start Year"
               name="startYear"
+              type="number"
               value={edu.startYear}
               onChange={(e) => handleChange(index, e)}
               variant="outlined"
               size="small"
+              inputProps={{ min: 1900, max: new Date().getFullYear() + 10 }}
+              fullWidth
             />
             <TextField
               label="End Year"
               name="endYear"
+              type="number"
               value={edu.endYear}
               onChange={(e) => handleChange(index, e)}
               variant="outlined"
               size="small"
+              inputProps={{ min: 1900, max: new Date().getFullYear() + 10 }}
+              fullWidth
             />
+            <TextField
+              label="Percentage / CGPA"
+              name="cgpa"
+              value={edu.cgpa}
+              onChange={(e) => handleChange(index, e)}
+              variant="outlined"
+              size="small"
+              fullWidth
+            />
+
           </Box>
           <TextField
             label="Description"

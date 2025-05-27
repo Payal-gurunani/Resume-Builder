@@ -1,39 +1,55 @@
-import { Box, TextField, Button, Typography, IconButton } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
+import { Box, Typography, TextField, Button, IconButton, List, ListItem, ListItemText } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function AchievementsSection({ resumeData, setResumeData, onNavigate }) {
-  const [achievement, setAchievement] = useState('');
+export default function AchievementsSection({ resumeData, setResumeData }) {
+  const [title, setTitle] = useState('');
+  const [year, setYear] = useState('');
 
   const handleAdd = () => {
-    if (achievement.trim() === '') return;
+    if (title.trim() === '') return; // require title at least
+    const newAchievement = { title: title.trim(), year: year.trim() };
     setResumeData({
       ...resumeData,
-      achievements: [...resumeData.achievements, achievement.trim()],
+      achievements: [...resumeData.achievements, newAchievement],
     });
-    setAchievement('');
+    setTitle('');
+    setYear('');
   };
 
   const handleRemove = (index) => {
-    const updatedAchievements = [...resumeData.achievements];
-    updatedAchievements.splice(index, 1);
-    setResumeData({ ...resumeData, achievements: updatedAchievements });
+    const updated = [...resumeData.achievements];
+    updated.splice(index, 1);
+    setResumeData({ ...resumeData, achievements: updated });
   };
 
   return (
     <Box sx={{ p: 2, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 2, mb: 2 }}>
-      <Typography variant="h6" gutterBottom>
-        Achievements
-      </Typography>
+     
 
-      <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+      <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
         <TextField
-          label="Achievement"
-          value={achievement}
-          onChange={(e) => setAchievement(e.target.value)}
+          label="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           variant="outlined"
           size="small"
           fullWidth
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              handleAdd();
+            }
+          }}
+          sx={{ flexGrow: 1, minWidth: 200 }}
+        />
+        <TextField
+          label="Year"
+          value={year}
+          onChange={(e) => setYear(e.target.value)}
+          variant="outlined"
+          size="small"
+          sx={{ width: 100 }}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               e.preventDefault();
@@ -46,23 +62,26 @@ export default function AchievementsSection({ resumeData, setResumeData, onNavig
         </Button>
       </Box>
 
-      <ul>
+      <List dense>
         {resumeData.achievements.map((item, index) => (
-          <li key={index} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {item}
-            <IconButton
-              size="small"
-              color="error"
-              onClick={() => handleRemove(index)}
-              aria-label="Remove achievement"
-            >
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </li>
+          <ListItem
+            key={index}
+            secondaryAction={
+              <IconButton
+                edge="end"
+                size="small"
+                color="error"
+                onClick={() => handleRemove(index)}
+                aria-label="Remove achievement"
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            }
+          >
+            <ListItemText primary={`${item.title} (${item.year})`} />
+          </ListItem>
         ))}
-      </ul>
-
-     
+      </List>
     </Box>
   );
 }

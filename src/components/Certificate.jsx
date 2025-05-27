@@ -40,9 +40,7 @@ export default function CertificatesSection({ resumeData, setResumeData, onNavig
 
   return (
     <Box sx={{ p: 2, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 2, mb: 2 }}>
-      <Typography variant="h6" gutterBottom>
-        Certificates
-      </Typography>
+     
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <TextField
@@ -62,8 +60,12 @@ export default function CertificatesSection({ resumeData, setResumeData, onNavig
         <TextField
           label="Issue Date"
           name="date"
+          type="date"
+            InputLabelProps={{ shrink: true }} 
+
           value={certificate.date}
           onChange={handleChange}
+        
         />
         <TextField
           label="Certificate Link"

@@ -33,65 +33,65 @@ export default function TemplateOne({ resumeData }) {
 
   const resumeRef = useRef();
 
- const handleDownloadPdf = () => {
-  const element = resumeRef.current;
-  if (!element) return;
+  const handleDownloadPdf = () => {
+    const element = resumeRef.current;
+    if (!element) return;
 
-  // Create wrapper div for styling and heading
-  const wrapper = document.createElement('div');
-  wrapper.style.backgroundColor = 'white';
-  wrapper.style.color = 'black';
-  wrapper.style.padding = '20px';
-  wrapper.style.fontFamily = 'Arial, sans-serif';
+    // Create wrapper div for styling and heading
+    const wrapper = document.createElement('div');
+    wrapper.style.backgroundColor = 'white';
+    wrapper.style.color = 'black';
+    wrapper.style.padding = '20px';
+    wrapper.style.fontFamily = 'Arial, sans-serif';
 
-  // Create and add heading with text content
-  const heading = document.createElement('h1');
-  heading.textContent = 'RESUME'; // <-- Set heading text here
-  heading.style.textAlign = 'center';
-  heading.style.marginBottom = '20px';
-  heading.style.color = 'black'; // force black color
-  wrapper.appendChild(heading);
+    // Create and add heading with text content
+    const heading = document.createElement('h1');
+    heading.textContent = 'RESUME'; // <-- Set heading text here
+    heading.style.textAlign = 'center';
+    heading.style.marginBottom = '20px';
+    heading.style.color = 'black'; // force black color
+    wrapper.appendChild(heading);
 
-  // Clone the resume content and append
-  const clone = element.cloneNode(true);
+    // Clone the resume content and append
+    const clone = element.cloneNode(true);
 
-  // Force all text in clone to black for PDF, to override external styles
-  clone.style.color = 'black';
-  // Also override any background colors on the clone or children
-  clone.style.backgroundColor = 'white';
+    // Force all text in clone to black for PDF, to override external styles
+    clone.style.color = 'black';
+    // Also override any background colors on the clone or children
+    clone.style.backgroundColor = 'white';
 
-  // Optional: recursively override styles inside clone (if needed)
-  const enforceColors = (node) => {
-    if (node.nodeType === 1) {
-      node.style.color = 'black';
-      node.style.backgroundColor = 'white';
-      for (const child of node.children) {
-        enforceColors(child);
+    // Optional: recursively override styles inside clone (if needed)
+    const enforceColors = (node) => {
+      if (node.nodeType === 1) {
+        node.style.color = 'black';
+        node.style.backgroundColor = 'white';
+        for (const child of node.children) {
+          enforceColors(child);
+        }
       }
-    }
+    };
+    enforceColors(clone);
+
+    wrapper.appendChild(clone);
+
+    const opt = {
+      margin: [10, 10, 10, 10], // mm margins
+      filename: `${resumeData.personalInfo.name || 'resume'}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#fff',
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css', 'legacy'] },
+    };
+
+    html2pdf()
+      .set(opt)
+      .from(wrapper)
+      .save();
   };
-  enforceColors(clone);
-
-  wrapper.appendChild(clone);
-
-  const opt = {
-    margin: [10, 10, 10, 10], // mm margins
-    filename: `${resumeData.personalInfo.name || 'resume'}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: '#fff',
-    },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak: { mode: ['css', 'legacy'] },
-  };
-
-  html2pdf()
-    .set(opt)
-    .from(wrapper)
-    .save();
-};
 
 
   const handlePrint = () => {
@@ -267,31 +267,59 @@ export default function TemplateOne({ resumeData }) {
             <SectionTitle>Education</SectionTitle>
             {education.map((edu, i) => (
               <Box key={i} mb={2}>
-                <Typography variant="subtitle2" fontWeight="bold">
-                  {edu.institution}
+                <Typography variant="subtitle2">
+                  {edu.degree}
                 </Typography>
-                <Typography variant="body2">{edu.degree}</Typography>
+                <Typography variant="body2" fontWeight="bold">
+                  {edu.school}
+                </Typography>
+
                 <Typography variant="caption" color="text.secondary">
-                  {edu.year}
+                  {edu.startYear}-{edu.endYear} {edu.cgpa && `| CGPA/Percentage: ${edu.cgpa}`}
                 </Typography>
               </Box>
             ))}
 
-            {certificates.length > 0 && (
+
+           {certificates.length > 0 && (
+  <>
+    <SectionTitle>Certificates</SectionTitle>
+    <List dense>
+      {certificates.map((cert, i) => (
+        <ListItem key={i} disablePadding sx={{ py: 0 }}>
+          <ListItemText
+            primary={
               <>
-                <SectionTitle>Certificates</SectionTitle>
-                <List dense>
-                  {certificates.map((cert, i) => (
-                    <ListItem key={i} sx={{ py: 0 }}>
-                      <ListItemText
-                        primary={`${cert.name} — ${cert.issuer}`}
-                        secondary={cert.year}
-                      />
-                    </ListItem>
-                  ))}
-                </List>
+                {cert.title} — {cert.issuer}
+                {cert.link && (
+                  <>
+                    {' — '}
+                    <Link
+                      href={cert.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{
+                        '@media print': {
+                          color: 'black',
+                          textDecoration: 'none',
+                          pointerEvents: 'none',
+                        },
+                      }}
+                    >
+                      View Certificate
+                    </Link>
+                  </>
+                )}
               </>
-            )}
+            }
+            secondary={cert.date || ''}
+          />
+        </ListItem>
+      ))}
+    </List>
+  </>
+)}
+
 
             {skills.length > 0 && (
               <>
@@ -329,7 +357,10 @@ export default function TemplateOne({ resumeData }) {
                 {experience.map((exp, i) => (
                   <Box key={i} mb={3}>
                     <Typography variant="subtitle2" fontWeight="bold">
-                      {exp.role} @ {exp.company}
+                      {exp.role}
+                    </Typography>
+                    <Typography variant="body2">
+                      {exp.company} - {exp.location}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                       {exp.start} – {exp.end}
@@ -340,6 +371,7 @@ export default function TemplateOne({ resumeData }) {
               </>
             )}
 
+
             {projects.length > 0 && (
               <>
                 <SectionTitle>Projects</SectionTitle>
@@ -348,6 +380,27 @@ export default function TemplateOne({ resumeData }) {
                     <Typography variant="subtitle2" fontWeight="bold">
                       {proj.title}
                     </Typography>
+                    {proj.link && (
+                      <Link
+                        href={proj.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{
+                          fontWeight: 'bold',
+                          wordBreak: 'break-all',
+                          display: 'inline-block',
+                          mb: 0.5,
+                          '@media print': {
+                            color: 'black',
+                            textDecoration: 'none',
+                            pointerEvents: 'none',
+                          },
+                        }}
+                      >
+                        {proj.link}
+                      </Link>
+                    )}
+
                     <Typography variant="body2">{proj.description}</Typography>
                   </Box>
                 ))}

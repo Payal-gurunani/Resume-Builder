@@ -24,9 +24,7 @@ export default function SkillsSection({ resumeData, setResumeData, onNavigate })
 
   return (
     <Box sx={{ p: 2, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 2, mb: 2 }}>
-      <Typography variant="h6" gutterBottom>
-        Skills
-      </Typography>
+      
 
       <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
         <TextField

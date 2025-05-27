@@ -26,69 +26,80 @@ export default function ExperienceSection({ resumeData, setResumeData, onNavigat
 
   return (
     <Box sx={{ p: 2, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 2, mb: 2 }}>
-      <Typography variant="h6" gutterBottom>
-        Experience
-      </Typography>
+  
 
-      {resumeData.experience.map((exp, index) => (
-        <Box key={index} sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
-          <TextField
-            label="Job Title"
-            name="jobTitle"
-            value={exp.jobTitle}
-            onChange={(e) => handleChange(index, e)}
-            variant="outlined"
-            size="small"
-            fullWidth
-          />
-          <TextField
-            label="Company"
-            name="company"
-            value={exp.company}
-            onChange={(e) => handleChange(index, e)}
-            variant="outlined"
-            size="small"
-            fullWidth
-          />
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <TextField
-              label="Start Year"
-              name="startYear"
-              value={exp.startYear}
-              onChange={(e) => handleChange(index, e)}
-              variant="outlined"
-              size="small"
-            />
-            <TextField
-              label="End Year"
-              name="endYear"
-              value={exp.endYear}
-              onChange={(e) => handleChange(index, e)}
-              variant="outlined"
-              size="small"
-            />
-          </Box>
-          <TextField
-            label="Description"
-            name="description"
-            value={exp.description}
-            onChange={(e) => handleChange(index, e)}
-            variant="outlined"
-            size="small"
-            fullWidth
-            multiline
-          />
-          <IconButton color="error" onClick={() => removeExperience(index)} sx={{ alignSelf: 'flex-start' }}>
-            <DeleteIcon />
-          </IconButton>
-        </Box>
-      ))}
+  {resumeData.experience.map((exp, index) => (
+    <Box key={index} sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
+      <TextField
+        label="Role"
+        name="role"
+        value={exp.role}
+        onChange={(e) => handleChange(index, e)}
+        variant="outlined"
+        size="small"
+        fullWidth
+      />
+      <TextField
+        label="Company"
+        name="company"
+        value={exp.company}
+        onChange={(e) => handleChange(index, e)}
+        variant="outlined"
+        size="small"
+        fullWidth
+      />
+      <TextField
+        label="Location"
+        name="location"
+        value={exp.location || ''}
+        onChange={(e) => handleChange(index, e)}
+        variant="outlined"
+        size="small"
+        fullWidth
+      />
+      <Box sx={{ display: 'flex', gap: 1 }}>
+<TextField
+  label="Start Year"
+  name="start"
+  type="number"
+  value={exp.start}
+  onChange={(e) => handleChange(index, e)}
+  variant="outlined"
+  size="small"
+  inputProps={{ min: 1900, max: new Date().getFullYear() + 10 }}
+/>
+<TextField
+  label="End Year"
+  name="end"
+  type="number"
+  value={exp.end}
+  onChange={(e) => handleChange(index, e)}
+  variant="outlined"
+  size="small"
+  inputProps={{ min: 1900, max: new Date().getFullYear() + 10 }}
+/>
 
-      <Button variant="contained" color="primary" onClick={addExperience} sx={{ mb: 2 }}>
-        Add Experience
-      </Button>
-
-     
+      </Box>
+      <TextField
+        label="Description"
+        name="description"
+        value={exp.description}
+        onChange={(e) => handleChange(index, e)}
+        variant="outlined"
+        size="small"
+        fullWidth
+        multiline
+      />
+      <IconButton color="error" onClick={() => removeExperience(index)} sx={{ alignSelf: 'flex-start' }}>
+        <DeleteIcon />
+      </IconButton>
     </Box>
+  ))}
+
+  <Button variant="contained" color="primary" onClick={addExperience} sx={{ mb: 2 }}>
+    Add Experience
+  </Button>
+</Box>
+
   );
 }

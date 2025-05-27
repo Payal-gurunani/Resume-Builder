@@ -15,9 +15,7 @@ const Objective = ({ resumeData, setResumeData, onNavigate }) => {
         mb: 2,
       }}
     >
-      <Typography variant="h6" gutterBottom>
-        Objective
-      </Typography>
+      
 
       <TextField
         label="Objective"

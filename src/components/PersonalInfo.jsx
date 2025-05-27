@@ -51,10 +51,6 @@ const hasFilledPersonalInfo = () => {
       onSubmit={handleSubmit}
       sx={{ p: 2, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 2, mb: 2 }}
     >
-      <Typography variant="h6" gutterBottom>
-        Personal Information
-      </Typography>
-
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <TextField
           label="Full Name"
