@@ -96,71 +96,67 @@ export default function TemplateTwo({
   };
 
   // PDF download using html2pdf.js
-  const handleDownloadPdf = () => {
-    const element = resumeRef.current;
-    if (!element) return;
+ const handleDownloadPdf = () => {
+  const element = resumeRef.current;
+  if (!element) return;
 
-    // Wrap resume content in a styled div for better formatting in PDF
-    const wrapper = document.createElement('div');
-    wrapper.style.backgroundColor = 'white';
-    wrapper.style.color = 'black';
-    wrapper.style.padding = '20px 30px';
-    wrapper.style.fontFamily = fontFamily || 'Arial, sans-serif';
-    wrapper.style.boxSizing = 'border-box';
-    wrapper.style.width = 'calc(210mm - 40px)'; // A4 minus padding
-    wrapper.style.maxWidth = '800px';
-    wrapper.style.margin = 'auto';
+  // Clone the resume content to preserve styles
+  const clone = element.cloneNode(true);
+  clone.style.color = 'black';
+  clone.style.backgroundColor = 'white';
+  clone.style.padding = '20px';
+  clone.style.boxSizing = 'border-box';
+  clone.style.width = '210mm'; // Full A4 width (approx 794 px)
+  clone.style.maxWidth = '100%';
 
-    // Add style to avoid page breaks inside headers/paragraphs
-    const style = document.createElement('style');
-    style.textContent = `
-      h1, h2, h3, h4, h5, h6 { page-break-after: avoid; }
-      p, li, div { page-break-inside: avoid; }
-      .avoid-break { page-break-inside: avoid; }
-    `;
-    wrapper.appendChild(style);
-
-    // Heading for PDF
-    const heading = document.createElement('h1');
-    heading.textContent = 'RESUME';
-    heading.style.textAlign = 'center';
-    heading.style.marginBottom = '15px';
-    heading.style.color = 'black';
-    wrapper.appendChild(heading);
-
-    // Clone the resume content and force colors
-    const clone = element.cloneNode(true);
-    clone.style.color = 'black';
-    clone.style.backgroundColor = 'white';
-    clone.style.padding = '0';
-
-    const enforceColors = (node) => {
-      if (node.nodeType === 1) {
-        node.style.color = 'black';
-        node.style.backgroundColor = 'white';
-        for (const child of node.children) {
-          enforceColors(child);
-        }
+  // Enforce colors inside clone
+  const enforceColors = (node) => {
+    if (node.nodeType === 1) {
+      node.style.color = 'black';
+      node.style.backgroundColor = 'white';
+      for (const child of node.children) {
+        enforceColors(child);
       }
-    };
-    enforceColors(clone);
-
-    wrapper.appendChild(clone);
-
-    const options = {
-      margin: [10, 10, 10, 10],
-      filename: `${personalInfo.name || 'resume'}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#fff' },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['css', 'legacy'] },
-    };
-
-    html2pdf()
-      .set(options)
-      .from(wrapper)
-      .save();
+    }
   };
+  enforceColors(clone);
+
+  // Create a wrapper div for html2pdf input
+  const wrapper = document.createElement('div');
+  wrapper.style.backgroundColor = 'white';
+  wrapper.style.padding = '0';
+  wrapper.style.margin = '0 auto';
+  wrapper.style.width = '210mm'; // A4 width
+  wrapper.appendChild(clone);
+
+  // Get height of content in pixels
+  document.body.appendChild(wrapper); // Append temporarily to measure
+  const contentHeightPx = wrapper.offsetHeight;
+  document.body.removeChild(wrapper);
+
+  // Convert px to mm (assuming 96dpi): 1px = 0.264583 mm
+  const pxToMm = (px) => px * 0.264583;
+  const contentHeightMm = pxToMm(contentHeightPx);
+
+  const options = {
+    margin: 10,
+    filename: `${resumeData.personalInfo.name || 'resume'}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#fff' },
+    jsPDF: {
+      unit: 'mm',
+      format: 'a4', // width = 210mm (A4 width), height = content height + margin
+      orientation: 'portrait',
+    },
+    pagebreak: { mode: ['css', 'legacy'] },
+  };
+clone.style.transform = 'none';
+  html2pdf()
+    .set(options)
+    .from(wrapper)
+    .save();
+};
+
 
   return (
     <>
@@ -207,14 +203,14 @@ export default function TemplateTwo({
         }}
       >
         {/* HEADER */}
-        <Box textAlign="center" pb={2} borderBottom={2} borderColor="divider">
-          <Typography variant="h4" fontWeight="bold"  sx={sectionTitleStyles}>
+        <Box textAlign="center" pb={2} borderBottom={2} borderColor="divider" sx={{ overflow: 'visible' }}>
+          <Typography variant="h5" fontWeight="bold"  sx={{...sectionTitleStyles,mb:1}}>
             {personalInfo.name}
           </Typography>
-          <Typography variant="body2" fontStyle="italic">
+          <Typography variant="subtittle1" fontStyle="italic">
             {personalInfo.email} | {personalInfo.phone}
           </Typography>
-          <Typography variant="body2">{personalInfo.address}</Typography>
+          <Typography variant="subtittle1">{personalInfo.address}</Typography>
           {(personalInfo.github || personalInfo.linkedin) && (
             <Typography variant="body2">
               {personalInfo.github && (
@@ -274,12 +270,12 @@ export default function TemplateTwo({
                 <Typography variant="subtitle2" fontWeight="bold">
                   {edu.school}
                 </Typography>
-                <Typography variant="body2">{edu.degree}</Typography>
+                <Typography variant="subtitle2">{edu.degree}</Typography>
                 <Typography variant="caption">
                   {edu.startYear} – {edu.endYear} {edu.cgpa && `| CGPA: ${edu.cgpa}`}
                 </Typography>
                 {edu.description && (
-                  <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>
+                  <Typography variant="subtitle2" sx={{ whiteSpace: 'pre-line' }}>
                     {edu.description}
                   </Typography>
                 )}
@@ -293,7 +289,7 @@ export default function TemplateTwo({
           <Section title="EXPERIENCE" titleSx={sectionTitleStyles}>
             {experience.map((exp, i) => (
               <Box key={i} mb={2}>
-                <Typography variant="subtitle2" fontWeight="bold">
+                <Typography variant="subtitle1" fontWeight="bold">
                   {exp.company}, {exp.location}
                 </Typography>
                 <Typography variant="body2" fontStyle="italic">
@@ -302,12 +298,17 @@ export default function TemplateTwo({
                 <Typography variant="caption">
                   {exp.start} – {exp.end}
                 </Typography>
-                <List dense sx={{ pl: 2 }}>
-                  {exp.description?.split('\n').map((line, idx) => (
-                    <ListItem key={idx} disablePadding>
-                      <ListItemText primary={`• ${line}`} />
-                    </ListItem>
-                  ))}
+                <List dense sx={{ pl: 1 }}>
+                 {exp.description?.trim() && (
+  <List dense sx={{ pl: 1 }}>
+    {exp.description.split('\n').map((line, idx) => (
+      <ListItem key={idx} disablePadding>
+        <ListItemText primary={`• ${line}`} />
+      </ListItem>
+    ))}
+  </List>
+)}
+
                 </List>
               </Box>
             ))}

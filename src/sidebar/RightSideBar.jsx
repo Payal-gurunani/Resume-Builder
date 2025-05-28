@@ -1,7 +1,7 @@
 import React from 'react'
 
 const fonts = ['Arial', 'Georgia', 'Roboto', 'Poppins']
-const sectionList = ['education', 'experience', 'skills', 'projects', 'certificates', 'achievements', 'Summary']
+const sectionList = ['education', 'experience', 'skills', 'projects', 'certificates', 'achievements', 'objective']
 
 const RightSidebar = ({
   fontFamily,

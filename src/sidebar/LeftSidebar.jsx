@@ -17,7 +17,7 @@ import CertificatesSection from '../components/Certificate.jsx';
 import AchievementsSection from '../components/AchievementsSection.jsx';
 
 const LeftSidebar = ({ resumeData, setResumeData }) => {
-    const [isOpen, setIsOpen] = useState(true); // Sidebar is open by default on desktop
+    const [isOpen, setIsOpen] = useState(false); // Sidebar is open by default on desktop
   const toggleSidebar = () => setIsOpen(!isOpen);
 
   return (

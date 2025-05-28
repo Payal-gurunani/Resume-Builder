@@ -108,7 +108,7 @@ function App() {
           <LeftSidebar
             resumeData={resumeData}
             setResumeData={setResumeData}
-            mobileToggleOnly={false}
+            mobileToggleOnly={true}
           />
         </div>
 
