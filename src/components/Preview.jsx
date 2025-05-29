@@ -9,7 +9,8 @@ function Preview({
   primaryColor,
   spacing,
   zoom,
-  visibleSections
+  visibleSections,
+  customSections
 }) {
   if (!resumeData) return <p>Loading resume data...</p>;
 
@@ -23,6 +24,8 @@ function Preview({
           spacing={spacing}
           zoom={zoom}
           visibleSections={visibleSections}
+            customSections={customSections}
+
         />
       )}
       {selectedTemplate === 'templateTwo' && (
@@ -33,6 +36,7 @@ function Preview({
           spacing={spacing}
           zoom={zoom}
           visibleSections={visibleSections}
+          customSections={customSections}
         />
       )}
     </div>

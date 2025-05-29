@@ -24,6 +24,7 @@ export default function TemplateTwo({
     summary: true,
   },
   zoom,
+   customSections = [],
 }) {
   const {
     personalInfo = {},
@@ -400,6 +401,23 @@ export default function TemplateTwo({
             </List>
           </Section>
         )}
+
+           {customSections.map(({ id, title }) => {
+                    // Only render if visible and data exists
+                    if (!visibleSections[id] || !resumeData[id]) return null;
+        
+                    // The content is raw text in resumeData[id], you can customize rendering here
+                    return (
+                     <Section title={title} titleSx={sectionTitleStyles}>
+                       <Box key={id} sx={{ mb: spacing }}>
+                      
+                        <Typography variant="body2" whiteSpace="pre-line">
+                          {resumeData[id]}
+                        </Typography>
+                      </Box>
+                     </Section>
+                    );
+                  })}
       </Box>
     </>
   );

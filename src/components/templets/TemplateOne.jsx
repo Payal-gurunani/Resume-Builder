@@ -34,7 +34,8 @@ export default function TemplateOne({
     skills: true,
     objective: true,
 
-  }
+  },
+  customSections = [],
 }) {
   const {
     personalInfo,
@@ -207,7 +208,7 @@ export default function TemplateOne({
 
 
         {/* CONTENT WRAPPER */}
-        <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={3}>
+        <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={spacing}>
           {/* LEFT COLUMN */}
           <Box
             width={{ xs: '100%', md: '35%' }}
@@ -282,7 +283,7 @@ export default function TemplateOne({
               <>
                 <SectionTitle>Education</SectionTitle>
                 {education.map((edu, i) => (
-                  <Box key={i} sx={{ mb: 2 }}>
+                  <Box key={i} sx={{ mb:spacing }}>
                     <Typography variant="subtitle">
                       {edu.degree}
                     </Typography>
@@ -436,6 +437,22 @@ export default function TemplateOne({
                 </List>
               </>
             )}
+             
+          {customSections.map(({ id, title }) => {
+            // Only render if visible and data exists
+            if (!visibleSections[id] || !resumeData[id]) return null;
+
+            // The content is raw text in resumeData[id], you can customize rendering here
+            return (
+              <Box key={id} sx={{ mb: spacing }}>
+                <SectionTitle>{title}</SectionTitle>
+                <Typography variant="body2" whiteSpace="pre-line">
+                  {resumeData[id]}
+                </Typography>
+              </Box>
+            );
+          })}
+       
 
           </Box>
         </Box>

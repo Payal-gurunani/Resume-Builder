@@ -135,7 +135,7 @@ function App() {
             spacing={spacing}
             zoom={zoom}
             visibleSections={visibleSections}
-                    customSections={customSections}
+             customSections={customSections}
 
           />
 

@@ -72,7 +72,7 @@ const RightSidebar = ({
   <label key={id} className="flex items-center space-x-2">
     <input
       type="checkbox"
-      checked={visibleSections[id] ?? true}
+      checked={visibleSections[id] ?? false}
       onChange={() => toggleSection(id)}
     />
     <span>{title}</span>
