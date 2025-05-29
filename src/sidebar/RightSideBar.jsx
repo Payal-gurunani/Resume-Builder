@@ -1,6 +1,6 @@
 import React from 'react'
 
-const fonts = ['Arial', 'Georgia', 'Roboto', 'Poppins']
+// const fonts = ['Arial', 'Georgia', 'Roboto', 'Poppins']
 const sectionList = ['education', 'experience', 'skills', 'projects', 'certificates', 'achievements', 'objective']
 
 const RightSidebar = ({
@@ -13,7 +13,9 @@ const RightSidebar = ({
   visibleSections,
   setVisibleSections,
   zoom,
-  setZoom
+  setZoom,
+  customSections = [],    
+  setCustomSections  
 }) => {
   
   const toggleSection = (section) => {
@@ -25,18 +27,7 @@ const RightSidebar = ({
 
   return (
     <div className="p-4 pr-0 h-full w-full space-y-6">
-      {/* <div>
-        <h3 className="font-semibold mb-2">Font Family</h3>
-        <select
-          value={fontFamily}
-          onChange={(e) => setFontFamily(e.target.value)}
-          className="w-full p-2 border rounded"
-        >
-          {fonts.map(font => (
-            <option key={font} value={font}>{font}</option>
-          ))}
-        </select>
-      </div> */}
+      
 
       <div>
         <h3 className="font-semibold mb-2">Primary Color</h3>
@@ -75,6 +66,19 @@ const RightSidebar = ({
               <span className="capitalize">{section}</span>
             </label>
           ))}
+
+            {/* Render custom sections */}
+  {customSections.map(({ id, title }) => (
+  <label key={id} className="flex items-center space-x-2">
+    <input
+      type="checkbox"
+      checked={visibleSections[id] ?? true}
+      onChange={() => toggleSection(id)}
+    />
+    <span>{title}</span>
+  </label>
+))}
+
         </div>
       </div>
 

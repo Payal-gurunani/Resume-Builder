@@ -303,7 +303,7 @@ export default function TemplateOne({
                 <SectionTitle>Certificates</SectionTitle>
                 <List >
                   {certificates.map((cert, i) => (
-                    <ListItem key={i} disablePadding sx={{ py: 1}}>
+                    <ListItem key={i} disablePadding sx={{ py: 1 }}>
                       <ListItemText
                         primary={
                           <>

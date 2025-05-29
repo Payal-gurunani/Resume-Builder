@@ -10,34 +10,31 @@ import {
   Button,
 } from '@mui/material';
 
-
 export default function TemplateTwo({
   resumeData,
   fontFamily,
-  primaryColor,
   spacing,
   visibleSections = {
     education: true,
-  experience: true,
-  projects: true,
-  certificates: true,
-  achievements: true,
-  skills: true,
-  summary: true,
-
-},
+    experience: true,
+    projects: true,
+    certificates: true,
+    achievements: true,
+    skills: true,
+    summary: true,
+  },
   zoom,
 }) {
- const {
-  personalInfo = {},
-  objective = '',
-  education = [],
-  experience = [],
-  skills = [],
-  projects = [],
-  certificates = [],
-  achievements = [],
-} = resumeData;
+  const {
+    personalInfo = {},
+    objective = '',
+    education = [],
+    experience = [],
+    skills = [],
+    projects = [],
+    certificates = [],
+    achievements = [],
+  } = resumeData;
   const resumeRef = useRef();
   const sectionTitleStyles = {
     color: '#B0B0B0',
@@ -96,67 +93,66 @@ export default function TemplateTwo({
   };
 
   // PDF download using html2pdf.js
- const handleDownloadPdf = () => {
-  const element = resumeRef.current;
-  if (!element) return;
+  const handleDownloadPdf = () => {
+    const element = resumeRef.current;
+    if (!element) return;
 
-  // Clone the resume content to preserve styles
-  const clone = element.cloneNode(true);
-  clone.style.color = 'black';
-  clone.style.backgroundColor = 'white';
-  clone.style.padding = '20px';
-  clone.style.boxSizing = 'border-box';
-  clone.style.width = '210mm'; // Full A4 width (approx 794 px)
-  clone.style.maxWidth = '100%';
+    // Clone the resume content to preserve styles
+    const clone = element.cloneNode(true);
+    clone.style.color = 'black';
+    clone.style.backgroundColor = 'white';
+    clone.style.padding = '20px';
+    clone.style.boxSizing = 'border-box';
+    clone.style.width = '210mm'; // Full A4 width (approx 794 px)
+    clone.style.maxWidth = '100%';
 
-  // Enforce colors inside clone
-  const enforceColors = (node) => {
-    if (node.nodeType === 1) {
-      node.style.color = 'black';
-      node.style.backgroundColor = 'white';
-      for (const child of node.children) {
-        enforceColors(child);
+    // Enforce colors inside clone
+    const enforceColors = (node) => {
+      if (node.nodeType === 1) {
+        node.style.color = 'black';
+        node.style.backgroundColor = 'white';
+        for (const child of node.children) {
+          enforceColors(child);
+        }
       }
-    }
+    };
+    enforceColors(clone);
+
+    // Create a wrapper div for html2pdf input
+    const wrapper = document.createElement('div');
+    wrapper.style.backgroundColor = 'white';
+    wrapper.style.padding = '0';
+    wrapper.style.margin = '0 auto';
+    wrapper.style.width = '210mm'; // A4 width
+    wrapper.appendChild(clone);
+
+    // Get height of content in pixels
+    document.body.appendChild(wrapper); // Append temporarily to measure
+    const contentHeightPx = wrapper.offsetHeight;
+    document.body.removeChild(wrapper);
+
+    // Convert px to mm (assuming 96dpi): 1px = 0.264583 mm
+    const pxToMm = (px) => px * 0.264583;
+    const contentHeightMm = pxToMm(contentHeightPx);
+
+    const options = {
+      margin: 10,
+      filename: `${resumeData.personalInfo.name || 'resume'}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#fff' },
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4', // width = 210mm (A4 width), height = content height + margin
+        orientation: 'portrait',
+      },
+      pagebreak: { mode: ['css', 'legacy'] },
+    };
+    clone.style.transform = 'none';
+    html2pdf()
+      .set(options)
+      .from(wrapper)
+      .save();
   };
-  enforceColors(clone);
-
-  // Create a wrapper div for html2pdf input
-  const wrapper = document.createElement('div');
-  wrapper.style.backgroundColor = 'white';
-  wrapper.style.padding = '0';
-  wrapper.style.margin = '0 auto';
-  wrapper.style.width = '210mm'; // A4 width
-  wrapper.appendChild(clone);
-
-  // Get height of content in pixels
-  document.body.appendChild(wrapper); // Append temporarily to measure
-  const contentHeightPx = wrapper.offsetHeight;
-  document.body.removeChild(wrapper);
-
-  // Convert px to mm (assuming 96dpi): 1px = 0.264583 mm
-  const pxToMm = (px) => px * 0.264583;
-  const contentHeightMm = pxToMm(contentHeightPx);
-
-  const options = {
-    margin: 10,
-    filename: `${resumeData.personalInfo.name || 'resume'}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#fff' },
-    jsPDF: {
-      unit: 'mm',
-      format: 'a4', // width = 210mm (A4 width), height = content height + margin
-      orientation: 'portrait',
-    },
-    pagebreak: { mode: ['css', 'legacy'] },
-  };
-clone.style.transform = 'none';
-  html2pdf()
-    .set(options)
-    .from(wrapper)
-    .save();
-};
-
 
   return (
     <>
@@ -204,7 +200,7 @@ clone.style.transform = 'none';
       >
         {/* HEADER */}
         <Box textAlign="center" pb={2} borderBottom={2} borderColor="divider" sx={{ overflow: 'visible' }}>
-          <Typography variant="h5" fontWeight="bold"  sx={{...sectionTitleStyles,mb:1}}>
+          <Typography variant="h5" fontWeight="bold" sx={{ ...sectionTitleStyles, mb: 1 }}>
             {personalInfo.name}
           </Typography>
           <Typography variant="subtittle1" fontStyle="italic">
@@ -253,17 +249,17 @@ clone.style.transform = 'none';
         </Box>
 
         {/* Summary */}
-         {visibleSections.objective && objective && (
+        {visibleSections.objective && objective && (
           <Section title="objective" titleSx={sectionTitleStyles}>
             <Typography variant="body2">{objective}</Typography>
           </Section>
         )}
         {console.log("Summary content:", objective)}
-{console.log("Is summary section visible?", visibleSections.objective)}
+        {console.log("Is summary section visible?", visibleSections.objective)}
 
-        
+
         {/* EDUCATION */}
-       {visibleSections.education && education.length > 0 && (
+        {visibleSections.education && education.length > 0 && (
           <Section title="EDUCATION" titleSx={sectionTitleStyles}>
             {education.map((edu, i) => (
               <Box key={i} mb={2 * spacing}>
@@ -299,15 +295,15 @@ clone.style.transform = 'none';
                   {exp.start} – {exp.end}
                 </Typography>
                 <List dense sx={{ pl: 1 }}>
-                 {exp.description?.trim() && (
-  <List dense sx={{ pl: 1 }}>
-    {exp.description.split('\n').map((line, idx) => (
-      <ListItem key={idx} disablePadding>
-        <ListItemText primary={`• ${line}`} />
-      </ListItem>
-    ))}
-  </List>
-)}
+                  {exp.description?.trim() && (
+                    <List dense sx={{ pl: 1 }}>
+                      {exp.description.split('\n').map((line, idx) => (
+                        <ListItem key={idx} disablePadding>
+                          <ListItemText primary={`• ${line}`} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  )}
 
                 </List>
               </Box>
@@ -316,14 +312,14 @@ clone.style.transform = 'none';
         )}
 
         {/* SKILLS */}
-         {visibleSections.skills && skills.length > 0 && (
+        {visibleSections.skills && skills.length > 0 && (
           <Section title="KEY SKILLS" subtitle="(not limited to two)" titleSx={sectionTitleStyles}>
             <Typography variant="body2">{skills.join(', ')}</Typography>
           </Section>
         )}
 
         {/* PROJECTS */}
-         {visibleSections.projects && projects.length > 0 && (
+        {visibleSections.projects && projects.length > 0 && (
           <Section title="PROJECTS" titleSx={sectionTitleStyles}>
             {projects.map((proj, i) => (
               <Box key={i} mb={1}>
@@ -392,7 +388,7 @@ clone.style.transform = 'none';
           </Section>
         )}
 
-           {/* ACHIEVEMENTS */}
+        {/* ACHIEVEMENTS */}
         {visibleSections.achievements && achievements.length > 0 && (
           <Section title="ACHIEVEMENTS" titleSx={sectionTitleStyles}>
             <List dense>

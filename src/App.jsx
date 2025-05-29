@@ -27,6 +27,7 @@ function App() {
     achievements: true,
     objective: true
   });
+  const [customSections, setCustomSections] = useState([])
 
   const [isDarkMode, setIsDarkMode] = useState(true)
   const [resumeData, setResumeData] = useState({
@@ -79,20 +80,20 @@ function App() {
         <IconButton
           onClick={toggleTheme}
           color="inherit"
-          sx={{ position: 'absolute', top: 16,right:40 }}
+          sx={{ position: 'absolute', top: 16, right: 40 }}
         >
           {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
         </IconButton>
       </div>
 
-{/* Mobile toggle button for Right Sidebar */}
-<button
-  className="md:hidden fixed bottom-4 right-4 z-50 p-3 bg-gray-800 text-white rounded-full shadow-lg"
-  onClick={() => setIsRightSidebarOpen(true)}
-  aria-label="Open settings"
->
-  ⚙️
-</button>
+      {/* Mobile toggle button for Right Sidebar */}
+      <button
+        className="md:hidden fixed bottom-4 right-4 z-50 p-3 bg-gray-800 text-white rounded-full shadow-lg"
+        onClick={() => setIsRightSidebarOpen(true)}
+        aria-label="Open settings"
+      >
+        ⚙️
+      </button>
 
       <div className="relative h-screen grid grid-cols-1 md:grid-cols-[1fr_2fr_1fr]">
         {/* Sidebar (only hidden on mobile) */}
@@ -100,6 +101,9 @@ function App() {
           <LeftSidebar
             resumeData={resumeData}
             setResumeData={setResumeData}
+            customSections={customSections}
+  setCustomSections={setCustomSections}
+
           />
         </aside>
 
@@ -109,6 +113,9 @@ function App() {
             resumeData={resumeData}
             setResumeData={setResumeData}
             mobileToggleOnly={true}
+            customSections={customSections}
+  setCustomSections={setCustomSections}
+
           />
         </div>
 
@@ -128,30 +135,34 @@ function App() {
             spacing={spacing}
             zoom={zoom}
             visibleSections={visibleSections}
+                    customSections={customSections}
+
           />
 
         </main>
 
         <aside className="hidden md:block border-l h-screen overflow-y-auto">
           <Drawer
-  anchor="right"
-  open={isRightSidebarOpen}
-  onClose={() => setIsRightSidebarOpen(false)}
-  PaperProps={{ style: { width: '80vw', maxWidth: 350 } }}
->
-  <RightSidebar
-    fontFamily={fontFamily}
-    setFontFamily={setFontFamily}
-    primaryColor={primaryColor}
-    setPrimaryColor={setPrimaryColor}
-    spacing={spacing}
-    setSpacing={setSpacing}
-    zoom={zoom}
-    setZoom={setZoom}
-    visibleSections={visibleSections}
-    setVisibleSections={setVisibleSections}
-  />
-</Drawer>
+            anchor="right"
+            open={isRightSidebarOpen}
+            onClose={() => setIsRightSidebarOpen(false)}
+            PaperProps={{ style: { width: '80vw', maxWidth: 350 } }}
+          >
+            <RightSidebar
+              fontFamily={fontFamily}
+              setFontFamily={setFontFamily}
+              primaryColor={primaryColor}
+              setPrimaryColor={setPrimaryColor}
+              spacing={spacing}
+              setSpacing={setSpacing}
+              zoom={zoom}
+              setZoom={setZoom}
+              visibleSections={visibleSections}
+              setVisibleSections={setVisibleSections}
+              customSections={customSections}
+        setCustomSections={setCustomSections}
+            />
+          </Drawer>
 
           <RightSidebar
             fontFamily={fontFamily}
@@ -164,6 +175,9 @@ function App() {
             setZoom={setZoom}
             visibleSections={visibleSections}
             setVisibleSections={setVisibleSections}
+            customSections={customSections}
+        setCustomSections={setCustomSections}
+
           />
 
         </aside>

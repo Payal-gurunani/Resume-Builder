@@ -3,10 +3,14 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  TextField ,
+  Button,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AddIcon from '@mui/icons-material/Add';
+
 import PersonalInfo from '../components/PersonalInfo.jsx'
 import EducationSection from '../components/EducationSection.jsx'
 import ExperienceSection from '../components/ExperienceSection.jsx'
@@ -16,9 +20,31 @@ import Objective from '../components/Objective.jsx';
 import CertificatesSection from '../components/Certificate.jsx';
 import AchievementsSection from '../components/AchievementsSection.jsx';
 
-const LeftSidebar = ({ resumeData, setResumeData }) => {
-    const [isOpen, setIsOpen] = useState(false); // Sidebar is open by default on desktop
+const LeftSidebar = ({ resumeData, setResumeData,customSections = [], setCustomSections }) => {
+    const [isOpen, setIsOpen] = useState(false); 
+      const [newSectionName, setNewSectionName] = useState('');
+
   const toggleSidebar = () => setIsOpen(!isOpen);
+const handleAddCustomSection = () => {
+  const title = newSectionName.trim();
+  if (!title) return;
+
+  const id = title.toLowerCase().replace(/\s+/g, '_');
+
+  // Avoid duplicate ids
+  if (customSections.find(section => section.id === id)) return;
+
+  setCustomSections(prev => [...prev, { id, title }]);
+
+  setResumeData(prev => ({
+    ...prev,
+    [id]: ''
+  }));
+
+  setNewSectionName('');
+};
+
+
 
   return (
   
@@ -110,6 +136,57 @@ const LeftSidebar = ({ resumeData, setResumeData }) => {
           <AchievementsSection resumeData={resumeData} setResumeData={setResumeData} />
         </AccordionDetails>
       </Accordion>
+
+
+      {/* Custom Sections */}
+        {customSections.map(({ id, title }) => (
+  <Accordion key={id}>
+    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      {title}
+    </AccordionSummary>
+    <AccordionDetails>
+      <TextField
+        multiline
+        fullWidth
+        rows={4}
+        placeholder={`Enter ${title} content`}
+        value={resumeData[id] || ''}
+        onChange={(e) =>
+          setResumeData(prev => ({
+            ...prev,
+            [id]: e.target.value
+          }))
+        }
+      />
+    </AccordionDetails>
+  </Accordion>
+))}
+
+        {/* Add Custom Section */}
+        <div className="p-4 border-t mt-4">
+          <TextField
+            label="New Section Name"
+            variant="outlined"
+            size="small"
+            fullWidth
+            value={newSectionName}
+            onChange={(e) => setNewSectionName(e.target.value)}
+          />
+          <Button
+            startIcon={<AddIcon />}
+            onClick={handleAddCustomSection}
+            variant="contained"
+            size="small"
+            sx={{ marginTop: 1 }}
+            fullWidth
+          >
+            Add Section
+          </Button>
+        </div>
+
+
+
+
     </div>
     </>
   );
